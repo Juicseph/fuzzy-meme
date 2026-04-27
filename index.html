@@ -453,7 +453,35 @@ textarea.form-input{resize:vertical;min-height:80px;}
 .coach-bio-av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--on-acc);flex-shrink:0;border:3px solid var(--acc);}
 .coach-bio-name{font-size:17px;font-weight:800;margin-bottom:2px;}
 .coach-bio-spec{font-size:12px;color:var(--acc);font-weight:600;}
-.coach-bio-certs{font-size:11px;color:var(--muted);margin-top:2px;}
+.coach-bio-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.coach-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.03em;white-space:nowrap;}
+/* NCAA Athlete */
+.cb-ncaa-d1-athlete{background:rgba(30,64,175,.25);color:#93c5fd;border:1px solid rgba(59,130,246,.3);}
+.cb-ncaa-d2-athlete{background:rgba(37,99,235,.2);color:#60a5fa;border:1px solid rgba(59,130,246,.25);}
+.cb-ncaa-d3-athlete{background:rgba(29,78,216,.15);color:#93c5fd;border:1px solid rgba(59,130,246,.2);}
+/* NCAA Coach */
+.cb-ncaa-d1-coach{background:rgba(124,58,237,.25);color:#c4b5fd;border:1px solid rgba(139,92,246,.3);}
+.cb-ncaa-d2-coach{background:rgba(109,40,217,.2);color:#a78bfa;border:1px solid rgba(139,92,246,.25);}
+.cb-ncaa-d3-coach{background:rgba(91,33,182,.15);color:#c4b5fd;border:1px solid rgba(139,92,246,.2);}
+/* NAIA */
+.cb-naia-coach{background:rgba(79,70,229,.2);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);}
+.cb-naia-athlete{background:rgba(67,56,202,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.2);}
+/* Experience / Achievement */
+.cb-recruiting{background:rgba(5,150,105,.2);color:#6ee7b7;border:1px solid rgba(16,185,129,.3);}
+.cb-international{background:rgba(2,132,199,.2);color:#7dd3fc;border:1px solid rgba(14,165,233,.3);}
+.cb-pro{background:rgba(217,119,6,.25);color:#fcd34d;border:1px solid rgba(245,158,11,.3);}
+.cb-position{background:rgba(20,184,166,.2);color:#5eead4;border:1px solid rgba(20,184,166,.3);}
+.cb-film{background:rgba(156,163,175,.15);color:#e5e7eb;border:1px solid rgba(156,163,175,.2);}
+.cb-top-booked{background:rgba(220,38,38,.25);color:#fca5a5;border:1px solid rgba(239,68,68,.3);}
+/* Years */
+.cb-years-5{background:rgba(107,114,128,.2);color:#d1d5db;border:1px solid rgba(107,114,128,.3);}
+.cb-years-10{background:rgba(75,85,99,.25);color:#e5e7eb;border:1px solid rgba(107,114,128,.35);}
+.cb-years-15{background:rgba(55,65,81,.3);color:#f3f4f6;border:1px solid rgba(107,114,128,.4);}
+.cb-years-20{background:rgba(31,41,55,.35);color:#f9fafb;border:1px solid rgba(156,163,175,.4);}
+/* Elite */
+.cb-elite{background:linear-gradient(135deg,rgba(234,179,8,.2),rgba(245,158,11,.1));color:#fde047;border:1px solid rgba(234,179,8,.35);}
+.cb-high-perf{background:rgba(234,179,8,.15);color:#fcd34d;border:1px solid rgba(234,179,8,.3);}
+.cb-advanced{background:rgba(16,185,129,.2);color:#34d399;border:1px solid rgba(16,185,129,.3);}
 .coach-bio-text{font-size:13px;color:var(--txt);line-height:1.65;margin-bottom:14px;}
 .coach-bio-contacts{display:flex;flex-wrap:wrap;gap:8px;}
 .coach-contact-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:100px;background:var(--surf2);border:1px solid var(--bdr);font-size:12px;font-weight:600;color:var(--txt);}
@@ -488,6 +516,35 @@ textarea.form-input{resize:vertical;min-height:80px;}
 /* INLINE DATE/TIME PICKER inside session */
 .session-picker{display:none;background:var(--bg2);border:1.5px solid var(--bdr);border-radius:12px;padding:14px;margin-top:10px;animation:fadeUp .2s ease;}
 .session-picker.open{display:block;}
+
+/* ── SOLD OUT ── */
+.sold-out-wrap{position:relative;display:contents;}
+.pkg-card.sold-out,.svc-card.sold-out{pointer-events:none;filter:saturate(0) brightness(0.55);}
+.sold-out-stamp{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%) rotate(-12deg);
+  background:rgba(185,28,28,.9);color:#fff;
+  font-family:var(--fd);font-size:26px;letter-spacing:.14em;
+  padding:5px 18px;border-radius:6px;
+  border:2.5px solid rgba(255,255,255,.45);
+  pointer-events:none;z-index:10;white-space:nowrap;
+  box-shadow:0 4px 22px rgba(0,0,0,.45);
+}
+.pkg-sold-container,.svc-sold-container{position:relative;display:block;}
+
+/* ── HIDDEN IN ADMIN ── */
+.pkg-hidden-dim{opacity:.38;filter:grayscale(0.5);}
+.hidden-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.06);border:1px dashed var(--bdr);border-radius:100px;padding:2px 9px;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.05em;}
+
+/* ── TOGGLE SWITCH ── */
+.tog-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
+.tog-switch input{opacity:0;width:0;height:0;position:absolute;}
+.tog-slider{position:absolute;inset:0;background:rgba(255,255,255,.12);border-radius:100px;cursor:pointer;transition:background .2s;}
+.tog-slider::before{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.tog-switch input:checked+.tog-slider{background:var(--acc);}
+.tog-switch input:checked+.tog-slider::before{transform:translateX(18px);}
+.admin-tog-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--surf);border-radius:9px;margin-bottom:10px;gap:10px;}
+.admin-tog-lbl{font-size:12px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:6px;flex:1;}
 </style>
 </head>
 <body>
@@ -640,7 +697,6 @@ textarea.form-input{resize:vertical;min-height:80px;}
       <div class="pkg-sched-progress" id="pkgSchedProgress"></div>
     </div>
     <div class="session-list" id="sessionList"></div>
-    <button class="add-session-btn" onclick="addPkgSession()">+ Add a Session</button>
     <div class="btn-row" style="margin-top:18px;">
       <button class="btn-secondary" onclick="goTo(2)">← Back</button>
       <button class="btn-primary" style="width:auto;flex:1;margin-top:0;" onclick="goTo(4)">Add My Details →</button>
@@ -857,19 +913,19 @@ var DEF_PRICES = [
   {id:'p4',name:'Strategy & Film Review',emoji:'🎬',prices:{30:25,60:40,90:55,120:70},note:'No court fee!'}
 ];
 var DEF_PACKAGES = [
-  {id:'pk1',name:'Foundation Pack',sessions:4,discount:'Save 10%',price:270,svc:'1-on-1 Private Training',validDays:60,spotsLeft:3,showSpots:true,showValidity:true,badge:''},
-  {id:'pk2',name:'Performance Pack',sessions:8,discount:'Save 15%',price:510,svc:'1-on-1 Private Training',validDays:60,spotsLeft:2,showSpots:true,showValidity:true,badge:'popular'},
-  {id:'pk3',name:'Game Changer Pack',sessions:12,discount:'Save 20%',price:720,svc:'1-on-1 Private Training',validDays:90,spotsLeft:1,showSpots:true,showValidity:true,badge:'value'}
+  {id:'pk1',name:'Foundation Pack',sessions:4,discount:'Save 10%',price:270,svc:'1-on-1 Private Training',validDays:60,spotsLeft:3,showSpots:true,showValidity:true,badge:'',hidden:false},
+  {id:'pk2',name:'Performance Pack',sessions:8,discount:'Save 15%',price:510,svc:'1-on-1 Private Training',validDays:60,spotsLeft:2,showSpots:true,showValidity:true,badge:'popular',hidden:false},
+  {id:'pk3',name:'Game Changer Pack',sessions:12,discount:'Save 20%',price:720,svc:'1-on-1 Private Training',validDays:90,spotsLeft:1,showSpots:true,showValidity:true,badge:'value',hidden:false}
 ];
 var DEF_COACHES = [
   {id:'c1',name:'Orlando C.',initials:'OC',spec:'Setter & Attack',days:[1,2,3,4,5,6],hrStart:8,hrEnd:19,
    bio:'10+ years coaching competitive volleyball at club and high school level. Specializes in setting technique, offensive systems, and mental game training.',
    phone:'(559) 555-0101',email:'orlando@vbtrainer.com',instagram:'@orlandovolley',
-   certifications:'USAV Level 2 · CAP II Certified · Former D1 Player'},
+   badges:['ncaa-d1-athlete','years-10','position','recruiting']},
   {id:'c2',name:'Coach Maya',initials:'CM',spec:'Defense & Libero',days:[1,2,3,5,6],hrStart:9,hrEnd:17,
    bio:'Elite libero trainer with 8 years experience developing defensive specialists. Known for floor defense, passing accuracy, and footwork drills.',
    phone:'(559) 555-0202',email:'maya@vbtrainer.com',instagram:'@coachmayadef',
-   certifications:'USAV Level 1 · Libero Specialist Cert · ACE Certified'}
+   badges:['ncaa-d2-athlete','years-5','position','top-booked']}
 ];
 
 function getPrices(){return lsGet('vt_prices2',DEF_PRICES);}
@@ -1025,8 +1081,11 @@ function buildPkgGrid(){
   var pkgs=getPackages();
   var html='';
   pkgs.forEach(function(pk){
+    if(pk.hidden)return; // skip hidden packages on booking page
+
+    var isSoldOut=(pk.spotsLeft!=null&&pk.spotsLeft===0);
     var spotsHtml='';
-    if(pk.showSpots&&pk.spotsLeft!=null){
+    if(pk.showSpots&&pk.spotsLeft!=null&&pk.spotsLeft>0){
       spotsHtml='<span class="pkg-urgency-spots">🔥 '+pk.spotsLeft+' spot'+(pk.spotsLeft===1?'':'s')+' left</span>';
     }
     var validHtml='';
@@ -1036,22 +1095,23 @@ function buildPkgGrid(){
     var ribbonHtml='';
     var badge=pk.badge||'';
     var ribbonMap={
-      'popular': {cls:'pkg-ribbon-popular', text:'⭐ Most Popular'},
-      'value':   {cls:'pkg-ribbon-value',   text:'💎 Best Value'},
-      'coach':   {cls:'pkg-ribbon-coach',   text:'🧠 Coach Recommended'},
-      'starter': {cls:'pkg-ribbon-starter', text:'🚀 Starter Friendly'},
-      'fastest': {cls:'pkg-ribbon-fastest', text:'🔥 Fastest Results'},
-      'limited': {cls:'pkg-ribbon-limited', text:'⚡ Limited Spots'}
+      'popular':{cls:'pkg-ribbon-popular',text:'⭐ Most Popular'},
+      'value':  {cls:'pkg-ribbon-value',  text:'💎 Best Value'},
+      'coach':  {cls:'pkg-ribbon-coach',  text:'🧠 Coach Recommended'},
+      'starter':{cls:'pkg-ribbon-starter',text:'🚀 Starter Friendly'},
+      'fastest':{cls:'pkg-ribbon-fastest',text:'🔥 Fastest Results'},
+      'limited':{cls:'pkg-ribbon-limited',text:'⚡ Limited Spots'}
     };
-    if(badge&&ribbonMap[badge]){
+    if(!isSoldOut&&badge&&ribbonMap[badge]){
       ribbonHtml='<div class="'+ribbonMap[badge].cls+'">'+ribbonMap[badge].text+'</div>';
     }
     var cardCls='pkg-card';
-    if(badge==='popular')cardCls+=' pkg-featured';
-    if(badge==='value')cardCls+=' pkg-best-value';
-    if(badge==='limited')cardCls+=' pkg-limited';
+    if(!isSoldOut&&badge==='popular')cardCls+=' pkg-featured';
+    if(!isSoldOut&&badge==='value')cardCls+=' pkg-best-value';
+    if(!isSoldOut&&badge==='limited')cardCls+=' pkg-limited';
+    if(isSoldOut)cardCls+=' sold-out';
 
-    html+='<div class="'+cardCls+'" id="pkg_'+pk.id+'" onclick="pickPkg(\''+pk.id+'\')">'
+    var inner='<div class="'+cardCls+'" id="pkg_'+pk.id+'" onclick="pickPkg(\''+pk.id+'\')">'
       +ribbonHtml
       +'<div class="pkg-check">✓</div>'
       +'<div class="pkg-top"><div class="pkg-name">'+esc(pk.name)+'</div><div class="pkg-price">$'+pk.price+'</div></div>'
@@ -1062,14 +1122,21 @@ function buildPkgGrid(){
         +validHtml
       +'</div>'
     +'</div>';
+
+    if(isSoldOut){
+      html+='<div class="pkg-sold-container">'+inner+'<div class="sold-out-stamp">SOLD OUT</div></div>';
+    } else {
+      html+=inner;
+    }
   });
-  document.getElementById('pkgGrid').innerHTML=html;
+  document.getElementById('pkgGrid').innerHTML=html||'<div style="color:var(--muted);font-size:13px;padding:12px;">No packages available right now.</div>';
 }
 
 function pickPkg(id){
   var pkgs=getPackages();
   var pk=null;pkgs.forEach(function(x){if(x.id===id)pk=x;});
   if(!pk)return;
+  if(pk.spotsLeft!=null&&pk.spotsLeft===0){return;} // sold out — do nothing
   document.querySelectorAll('.pkg-card').forEach(function(c){c.classList.remove('active');});
   var el=document.getElementById('pkg_'+id);if(el)el.classList.add('active');
   document.querySelectorAll('.svc-card').forEach(function(c){c.classList.remove('active');});
@@ -1115,20 +1182,61 @@ function pickCoach(id){
   renderCoachBio(c);
 }
 
+/* ────────────────────────────
+   BADGE CATALOG
+──────────────────────────── */
+var BADGE_CATALOG = [
+  {id:'ncaa-d1-athlete', label:'NCAA D1 Athlete',   cls:'cb-ncaa-d1-athlete'},
+  {id:'ncaa-d2-athlete', label:'NCAA D2 Athlete',   cls:'cb-ncaa-d2-athlete'},
+  {id:'ncaa-d3-athlete', label:'NCAA D3 Athlete',   cls:'cb-ncaa-d3-athlete'},
+  {id:'ncaa-d1-coach',   label:'NCAA D1 Coach',     cls:'cb-ncaa-d1-coach'},
+  {id:'ncaa-d2-coach',   label:'NCAA D2 Coach',     cls:'cb-ncaa-d2-coach'},
+  {id:'ncaa-d3-coach',   label:'NCAA D3 Coach',     cls:'cb-ncaa-d3-coach'},
+  {id:'naia-coach',      label:'NAIA Coach',         cls:'cb-naia-coach'},
+  {id:'naia-athlete',    label:'NAIA Athlete',       cls:'cb-naia-athlete'},
+  {id:'recruiting',      label:'📈 Recruiting Exp', cls:'cb-recruiting'},
+  {id:'international',   label:'🌍 International',  cls:'cb-international'},
+  {id:'pro',             label:'🏐 Pro Player',      cls:'cb-pro'},
+  {id:'position',        label:'🎯 Position Spec',  cls:'cb-position'},
+  {id:'film',            label:'🎥 Film & Strategy', cls:'cb-film'},
+  {id:'top-booked',      label:'🔥 Top Booked',      cls:'cb-top-booked'},
+  {id:'years-5',         label:'🕒 5+ Yrs Coaching', cls:'cb-years-5'},
+  {id:'years-10',        label:'🕒 10+ Yrs Coaching',cls:'cb-years-10'},
+  {id:'years-15',        label:'🕒 15+ Yrs Coaching',cls:'cb-years-15'},
+  {id:'years-20',        label:'🕒 20+ Yrs Coaching',cls:'cb-years-20'},
+  {id:'elite',           label:'💎 Elite Trainer',   cls:'cb-elite'},
+  {id:'high-perf',       label:'🏆 High Performance',cls:'cb-high-perf'},
+  {id:'advanced',        label:'🚀 Advanced Dev',    cls:'cb-advanced'}
+];
+
+function getBadgeById(id){var b=null;BADGE_CATALOG.forEach(function(x){if(x.id===id)b=x;});return b;}
+
 function renderCoachBio(c){
   var panel=document.getElementById('coachBioPanel');
   if(!panel)return;
   var ini=c.initials||(c.name.split(' ').map(function(w){return w[0];}).join('').slice(0,2));
+
+  // Badges
+  var badgesHtml='';
+  if(c.badges&&c.badges.length){
+    badgesHtml='<div class="coach-bio-badges">';
+    c.badges.forEach(function(bid){var b=getBadgeById(bid);if(b)badgesHtml+='<span class="coach-badge '+b.cls+'">'+b.label+'</span>';});
+    badgesHtml+='</div>';
+  }
+
+  // Contacts
   var contactsHtml='';
   if(c.phone)contactsHtml+='<div class="coach-contact-chip">📞 '+esc(c.phone)+'</div>';
   if(c.email)contactsHtml+='<div class="coach-contact-chip">✉️ <a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a></div>';
   if(c.instagram)contactsHtml+='<div class="coach-contact-chip">📸 <a href="https://instagram.com/'+esc(c.instagram.replace('@',''))+'" target="_blank">'+esc(c.instagram)+'</a></div>';
+
   panel.innerHTML='<div class="coach-bio-header">'
     +'<div class="coach-bio-av">'+esc(ini)+'</div>'
-    +'<div><div class="coach-bio-name">'+esc(c.name)+'</div>'
-    +'<div class="coach-bio-spec">'+esc(c.spec||'')+'</div>'
-    +(c.certifications?'<div class="coach-bio-certs">'+esc(c.certifications)+'</div>':'')
+    +'<div style="flex:1;min-width:0;">'
+      +'<div class="coach-bio-name">'+esc(c.name)+'</div>'
+      +'<div class="coach-bio-spec">'+esc(c.spec||'')+'</div>'
     +'</div></div>'
+    +badgesHtml
     +(c.bio?'<div class="coach-bio-text">'+esc(c.bio)+'</div>':'')
     +(contactsHtml?'<div class="coach-bio-contacts">'+contactsHtml+'</div>':'');
   panel.classList.add('show');
@@ -1854,14 +1962,34 @@ function savePrices(){
 function buildPkgEditor(){
   var pkgs=getPackages();var html='';
   pkgs.forEach(function(pk){
-    html+='<div class="pke-card" style="position:relative;">'
-      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">'
-        +'<div class="pke-title" style="margin-bottom:0;">📦 '+esc(pk.name)+'</div>'
-        +'<button onclick="deletePkg(\''+pk.id+'\')" style="background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.25);color:#ff6b6b;font-size:12px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;">🗑 Remove</button>'
+    var isSoldOut=(pk.spotsLeft!=null&&pk.spotsLeft===0);
+    var isHidden=!!pk.hidden;
+    var statusPill=isSoldOut
+      ?'<span style="background:rgba(185,28,28,.2);color:#fca5a5;border:1px solid rgba(220,38,38,.3);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:800;">🚫 SOLD OUT</span>'
+      :isHidden
+        ?'<span class="hidden-tag">👁 Hidden</span>'
+        :'<span style="background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.25);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:800;">✓ Visible</span>';
+
+    html+='<div class="pke-card '+(isHidden?'pkg-hidden-dim':'')+'" style="position:relative;">'
+      // Header row
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">'
+        +'<div style="display:flex;align-items:center;gap:8px;"><div class="pke-title" style="margin-bottom:0;">📦 '+esc(pk.name)+'</div>'+statusPill+'</div>'
+        +'<button onclick="deletePkg(\''+pk.id+'\')" style="background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.25);color:#ff6b6b;font-size:12px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;">🗑 Remove</button>'
       +'</div>'
+      // Hide / Unhide toggle
+      +'<div class="admin-tog-row">'
+        +'<div class="admin-tog-lbl">👁 '+(isHidden?'Hidden from booking page':'Visible on booking page')+'</div>'
+        +'<label class="tog-switch"><input type="checkbox" id="pkhide_'+pk.id+'"'+(isHidden?'':' checked')+' onchange="togglePkgHide(\''+pk.id+'\',this)"><span class="tog-slider"></span></label>'
+      +'</div>'
+      // Fields
       +'<div class="pke-row">'
         +'<div class="pke-field"><div class="pe-lbl">Package Name</div><input class="pe-note" id="pkn_'+pk.id+'" value="'+esc(pk.name)+'"></div>'
-        +'<div class="pke-field"><div class="pe-lbl">Sessions</div><input class="pe-note" type="number" id="pks_'+pk.id+'" value="'+pk.sessions+'" min="2"></div>'
+        +'<div class="pke-field"><div class="pe-lbl">Sessions</div>'
+          +'<div style="display:flex;gap:6px;align-items:center;">'
+            +'<input class="pe-note" type="number" id="pks_'+pk.id+'" value="'+pk.sessions+'" min="1" style="flex:1;">'
+            +'<button onclick="addSessionToPkg(\''+pk.id+'\')" style="padding:8px 12px;border-radius:8px;background:var(--sel-bg);border:1px solid var(--acc);color:var(--acc);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Session</button>'
+          +'</div>'
+        +'</div>'
       +'</div>'
       +'<div class="pke-row">'
         +'<div class="pke-field"><div class="pe-lbl">Total Price ($)</div><div class="pe-price-row"><span class="pe-sym">$</span><input type="number" id="pkp_'+pk.id+'" value="'+pk.price+'" min="0"></div></div>'
@@ -1885,11 +2013,12 @@ function buildPkgEditor(){
         +'<option value="limited"'+(pk.badge==='limited'?' selected':'')+'>⚡ Limited Spots</option>'
         +'</select>'
       +'</div>'
+      // Urgency
       +'<div style="background:rgba(255,92,0,.06);border:1px solid rgba(255,92,0,.18);border-radius:10px;padding:12px;margin-top:4px;">'
-        +'<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--acc2);margin-bottom:10px;">⚡ Urgency Settings</div>'
+        +'<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--acc2);margin-bottom:10px;">⚡ Urgency &amp; Sold-Out</div>'
         +'<div class="pke-row">'
           +'<div class="pke-field"><div class="pe-lbl">Valid for (days)</div><input class="pe-note" type="number" id="pkv_'+pk.id+'" value="'+(pk.validDays||60)+'" min="0" placeholder="e.g. 60"></div>'
-          +'<div class="pke-field"><div class="pe-lbl">Spots Left</div><input class="pe-note" type="number" id="pksp_'+pk.id+'" value="'+(pk.spotsLeft!=null?pk.spotsLeft:'')+'" min="0" placeholder="e.g. 3"></div>'
+          +'<div class="pke-field"><div class="pe-lbl">Spots Left <span style="color:var(--muted);font-weight:400;">(0 = Sold Out)</span></div><input class="pe-note" type="number" id="pksp_'+pk.id+'" value="'+(pk.spotsLeft!=null?pk.spotsLeft:'')+'" min="0" placeholder="e.g. 3" onchange="previewSoldOut(\''+pk.id+'\',this.value)"></div>'
         +'</div>'
         +'<div class="pke-row" style="margin-top:10px;">'
           +'<div class="pke-field" style="flex-direction:row;align-items:center;gap:8px;">'
@@ -1916,7 +2045,8 @@ function savePackages(){
     var badgeEl=document.getElementById('pkbadge_'+pk.id);
     var vEl=document.getElementById('pkv_'+pk.id);var spEl=document.getElementById('pksp_'+pk.id);
     var showvEl=document.getElementById('pkshowv_'+pk.id);var showspEl=document.getElementById('pkshowsp_'+pk.id);
-    if(nEl)pk.name=nEl.value;if(sEl)pk.sessions=Number(sEl.value)||4;
+    var hideEl=document.getElementById('pkhide_'+pk.id);
+    if(nEl)pk.name=nEl.value;if(sEl)pk.sessions=Number(sEl.value)||1;
     if(pEl)pk.price=Number(pEl.value)||0;if(dEl)pk.discount=dEl.value;
     if(svcEl)pk.svc=svcEl.value;
     if(badgeEl)pk.badge=badgeEl.value;
@@ -1924,8 +2054,32 @@ function savePackages(){
     if(spEl)pk.spotsLeft=spEl.value!==''?Number(spEl.value):null;
     if(showvEl)pk.showValidity=showvEl.checked;
     if(showspEl)pk.showSpots=showspEl.checked;
+    if(hideEl)pk.hidden=!hideEl.checked; // toggle is "visible" so inverted
   });
   lsSet('vt_packages',pkgs);buildPkgGrid();buildPkgEditor();showToast('✅ Packages saved!');
+}
+
+function togglePkgHide(id,checkbox){
+  var pkgs=getPackages();
+  pkgs.forEach(function(pk){if(pk.id===id)pk.hidden=!checkbox.checked;});
+  lsSet('vt_packages',pkgs);
+  buildPkgGrid();
+  buildPkgEditor();
+}
+
+function addSessionToPkg(id){
+  var pkgs=getPackages();
+  pkgs.forEach(function(pk){if(pk.id===id)pk.sessions=(pk.sessions||1)+1;});
+  lsSet('vt_packages',pkgs);
+  buildPkgEditor();
+  buildPkgGrid();
+  showToast('Session added!');
+}
+
+function previewSoldOut(id,val){
+  // Instantly update the status pill without saving
+  var n=Number(val);
+  if(!isNaN(n)&&n===0){showToast('⚠️ Setting to 0 will mark this package as SOLD OUT.');}
 }
 
 function deletePkg(id){
@@ -2009,7 +2163,14 @@ function buildCoachManager(){
           +'<div class="cm-field"><div class="cm-lbl">Phone</div><input class="cm-inp" id="cmphone_'+c.id+'" value="'+esc(c.phone||'')+'" placeholder="(555) 000-0000"></div>'
           +'<div class="cm-field"><div class="cm-lbl">Email</div><input class="cm-inp" id="cmemail_'+c.id+'" value="'+esc(c.email||'')+'" placeholder="coach@email.com"></div>'
           +'<div class="cm-field"><div class="cm-lbl">Instagram</div><input class="cm-inp" id="cmig_'+c.id+'" value="'+esc(c.instagram||'')+'" placeholder="@handle"></div>'
-          +'<div class="cm-field full"><div class="cm-lbl">Certifications</div><input class="cm-inp" id="cmcerts_'+c.id+'" value="'+esc(c.certifications||'')+'" placeholder="e.g. USAV Level 2 · CAP II"></div>'
+          +'<div class="cm-field full" style="grid-column:1/-1;"><div class="cm-lbl" style="margin-bottom:10px;">Badges</div>'
+            +'<div style="display:flex;flex-wrap:wrap;gap:7px;" id="cmbadges_'+c.id+'">'
+            +BADGE_CATALOG.map(function(b){
+              var isOn=(c.badges||[]).indexOf(b.id)!==-1;
+              return'<span class="coach-badge '+b.cls+(isOn?' cb-on':' cb-off')+'" style="cursor:pointer;opacity:'+(isOn?'1':'.4')+';transition:opacity .18s;" onclick="toggleBadge(\''+c.id+'\',\''+b.id+'\',this)">'+b.label+'</span>';
+            }).join('')
+            +'</div>'
+          +'</div>'
           +'<div class="cm-field full"><div class="cm-lbl">Available Days</div><div class="day-pills" id="cmdays_'+c.id+'">'+dayToggles+'</div></div>'
           +'<div class="cm-field"><div class="cm-lbl">Start Time</div><select class="cm-inp" id="cmhs_'+c.id+'">'+hourOpts+'</select></div>'
           +'<div class="cm-field"><div class="cm-lbl">End Time</div><select class="cm-inp" id="cmhe_'+c.id+'">'+hourOpts+'</select></div>'
@@ -2028,6 +2189,16 @@ function buildCoachManager(){
 function toggleCM(id){var card=document.getElementById('cmc_'+id);if(card)card.classList.toggle('open');}
 function toggleDay(el){el.classList.toggle('on');}
 
+function toggleBadge(coachId, badgeId, el){
+  var coaches=getCoaches();var c=null;coaches.forEach(function(x){if(x.id===coachId)c=x;});
+  if(!c)return;
+  if(!c.badges)c.badges=[];
+  var idx=c.badges.indexOf(badgeId);
+  if(idx===-1){c.badges.push(badgeId);el.style.opacity='1';}
+  else{c.badges.splice(idx,1);el.style.opacity='.4';}
+  lsSet('vt_coaches',coaches);
+}
+
 function saveCoach(id){
   var coaches=getCoaches();var c=null;coaches.forEach(function(x){if(x.id===id)c=x;});if(!c)return;
   var nameEl=document.getElementById('cmname_'+id);var initEl=document.getElementById('cminit_'+id);
@@ -2035,12 +2206,12 @@ function saveCoach(id){
   var heEl=document.getElementById('cmhe_'+id);var daysEl=document.getElementById('cmdays_'+id);
   var bioEl=document.getElementById('cmbio_'+id);var phoneEl=document.getElementById('cmphone_'+id);
   var emailEl=document.getElementById('cmemail_'+id);var igEl=document.getElementById('cmig_'+id);
-  var certsEl=document.getElementById('cmcerts_'+id);
   if(nameEl)c.name=nameEl.value;if(initEl)c.initials=initEl.value;
   if(specEl)c.spec=specEl.value;if(hsEl)c.hrStart=Number(hsEl.value);if(heEl)c.hrEnd=Number(heEl.value);
   if(bioEl)c.bio=bioEl.value;if(phoneEl)c.phone=phoneEl.value;
   if(emailEl)c.email=emailEl.value;if(igEl)c.instagram=igEl.value;
-  if(certsEl)c.certifications=certsEl.value;
+  // badges are saved live on toggle, just ensure array exists
+  if(!c.badges)c.badges=[];
   if(daysEl){var pills=daysEl.querySelectorAll('.day-pill');c.days=[];pills.forEach(function(p,i){if(p.classList.contains('on'))c.days.push(i);});}
   lsSet('vt_coaches',coaches);buildCoachManager();buildBlockCoachSelect();showToast('✅ Coach saved!');
 }
@@ -2054,7 +2225,7 @@ function deleteCoach(id){
 
 function addCoach(){
   var coaches=getCoaches();
-  var nc={id:'c_'+Date.now(),name:'New Coach',initials:'NC',spec:'',days:[1,2,3,4,5,6],hrStart:8,hrEnd:19};
+  var nc={id:'c_'+Date.now(),name:'New Coach',initials:'NC',spec:'',days:[1,2,3,4,5,6],hrStart:8,hrEnd:19,bio:'',phone:'',email:'',instagram:'',badges:[]};
   coaches.push(nc);lsSet('vt_coaches',coaches);
   buildCoachManager();buildBlockCoachSelect();
   setTimeout(function(){toggleCM(nc.id);},80);
@@ -2081,9 +2252,9 @@ function showToast(msg){var t=document.getElementById('toast');t.textContent=msg
 ──────────────────────────── */
 (function(){
   // Clear old package data so renamed defaults + badge fields load fresh
-  if(!lsGet('vt_pkg_v3',false)){localStorage.removeItem('vt_packages');lsSet('vt_pkg_v3',true);}
-  // Clear old coach data so bio fields load fresh
-  if(!lsGet('vt_coach_v2',false)){localStorage.removeItem('vt_coaches');lsSet('vt_coach_v2',true);}
+  if(!lsGet('vt_pkg_v4',false)){localStorage.removeItem('vt_packages');lsSet('vt_pkg_v4',true);}
+  // Clear old coach data so badge fields load fresh
+  if(!lsGet('vt_coach_v3',false)){localStorage.removeItem('vt_coaches');lsSet('vt_coach_v3',true);}
   var t=lsGet('vt_theme','bold');setTheme(t);
   buildSvcGrid();buildPkgGrid();renderCal();
   if(EJS_READY)document.getElementById('ejsNotice').style.display='none';
