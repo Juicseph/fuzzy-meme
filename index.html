@@ -100,18 +100,24 @@ header{text-align:center;padding:70px 20px 36px;position:relative;z-index:1;}
 /* PACKAGE CARDS */
 .pkg-section{margin-top:22px;}
 .pkg-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;}
-.pkg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-@media(max-width:480px){.pkg-grid{grid-template-columns:1fr;}}
-.pkg-card{padding:14px 16px;border-radius:14px;border:2px solid var(--bdr);background:var(--surf2);cursor:pointer;transition:all .2s;position:relative;}
+.pkg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+@media(max-width:600px){.pkg-grid{grid-template-columns:1fr;}}
+.pkg-card{padding:16px;border-radius:14px;border:2px solid var(--bdr);background:var(--surf2);cursor:pointer;transition:all .2s;position:relative;display:flex;flex-direction:column;gap:0;}
 .pkg-card:hover{border-color:var(--acc);transform:translateY(-2px);}
 .pkg-card.active{border-color:var(--acc);background:var(--sel-bg);}
-.pkg-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.pkg-card.featured{border-color:rgba(204,255,0,.35);}
+.pkg-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;}
 .pkg-name{font-size:14px;font-weight:700;}
-.pkg-price{font-family:var(--fd);font-size:20px;color:var(--acc);letter-spacing:.04em;}
-.pkg-desc{font-size:12px;color:var(--muted);}
-.pkg-savings{display:inline-block;background:rgba(204,255,0,.15);color:var(--acc);font-size:10px;font-weight:800;padding:2px 8px;border-radius:100px;margin-top:5px;text-transform:uppercase;letter-spacing:.06em;}
+.pkg-price{font-family:var(--fd);font-size:22px;color:var(--acc);letter-spacing:.04em;white-space:nowrap;}
+.pkg-desc{font-size:12px;color:var(--muted);margin-bottom:7px;}
+.pkg-badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.pkg-savings{display:inline-flex;align-items:center;gap:3px;background:rgba(204,255,0,.15);color:var(--acc);font-size:10px;font-weight:800;padding:3px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.06em;}
+.pkg-urgency-spots{display:inline-flex;align-items:center;gap:3px;background:rgba(255,92,0,.15);color:var(--acc2);font-size:10px;font-weight:800;padding:3px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.05em;animation:spotsPulse 2.5s ease-in-out infinite;}
+@keyframes spotsPulse{0%,100%{opacity:1}50%{opacity:.65}}
+.pkg-urgency-time{display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,.07);color:var(--muted);font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;}
 .pkg-check{position:absolute;top:10px;right:10px;width:18px;height:18px;background:var(--acc);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--on-acc);font-weight:800;opacity:0;transition:opacity .2s;}
 .pkg-card.active .pkg-check{opacity:1;}
+.pkg-featured-ribbon{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--acc);color:var(--on-acc);font-size:9px;font-weight:800;padding:3px 12px;border-radius:0 0 8px 8px;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;}
 .or-divider{text-align:center;font-size:12px;color:var(--muted);margin:16px 0;display:flex;align-items:center;gap:12px;}
 .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--bdr);}
 
@@ -348,8 +354,9 @@ textarea.form-input{resize:vertical;min-height:80px;}
 .pe-note:focus{border-color:var(--acc);}
 
 /* PACKAGE EDITOR */
-.pkg-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
-@media(max-width:560px){.pkg-editor-grid{grid-template-columns:1fr;}}
+.pkg-editor-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px;}
+@media(max-width:760px){.pkg-editor-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:500px){.pkg-editor-grid{grid-template-columns:1fr;}}
 .pke-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--cr);padding:18px;}
 .pke-title{font-size:15px;font-weight:700;margin-bottom:14px;}
 .pke-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
@@ -501,9 +508,12 @@ textarea.form-input{resize:vertical;min-height:80px;}
     </div>
     <div class="dur-price-hint" id="durHint"></div>
 
-    <div class="or-divider">or book a package</div>
+    <div class="or-divider">or book a package &amp; save more</div>
 
-    <div class="pkg-label">📦 Session Packages — Save More</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+      <div class="pkg-label">📦 Session Packages</div>
+      <div style="font-size:11px;font-weight:700;color:var(--acc2);background:rgba(255,92,0,.1);border:1px solid rgba(255,92,0,.22);padding:4px 10px;border-radius:100px;display:inline-flex;align-items:center;gap:5px;animation:spotsPulse 2.5s ease-in-out infinite;">⚡ Limited weekly spots</div>
+    </div>
     <div class="pkg-grid" id="pkgGrid"></div>
 
     <button class="btn-primary" onclick="goTo(2)">Pick a Coach →</button>
@@ -697,7 +707,10 @@ textarea.form-input{resize:vertical;min-height:80px;}
       <div class="tab-panel" id="tab-packages">
         <div class="section-hdr"><div class="section-title">Session Packages</div><div class="section-sub">Edit package names, session counts, prices and discount labels.</div></div>
         <div class="pkg-editor-grid" id="pkgEditorGrid"></div>
-        <button class="btn-primary" style="max-width:260px;" onclick="savePackages()">💾 Save Packages</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn-primary" style="max-width:220px;" onclick="savePackages()">💾 Save Packages</button>
+          <button class="btn-secondary" onclick="addNewPkg()">+ Add Package</button>
+        </div>
       </div>
 
       <!-- BLOCK DATES TAB -->
@@ -753,8 +766,9 @@ var DEF_PRICES = [
   {id:'p4',name:'Strategy & Film Review',emoji:'🎬',prices:{30:25,60:40,90:55,120:70},note:'No court fee!'}
 ];
 var DEF_PACKAGES = [
-  {id:'pk1',name:'Starter Pack',sessions:4,discount:'Save 10%',price:270,svc:'1-on-1 Private Training'},
-  {id:'pk2',name:'Champion Pack',sessions:8,discount:'Save 15%',price:510,svc:'1-on-1 Private Training'}
+  {id:'pk1',name:'Foundation Pack',sessions:4,discount:'Save 10%',price:270,svc:'1-on-1 Private Training',validDays:60,spotsLeft:3,showSpots:true,showValidity:true},
+  {id:'pk2',name:'Performance Pack',sessions:8,discount:'Save 15%',price:510,svc:'1-on-1 Private Training',validDays:60,spotsLeft:2,showSpots:true,showValidity:true},
+  {id:'pk3',name:'Game Changer Pack',sessions:12,discount:'Save 20%',price:720,svc:'1-on-1 Private Training',validDays:90,spotsLeft:1,showSpots:true,showValidity:true}
 ];
 var DEF_COACHES = [
   {id:'c1',name:'Orlando C.',initials:'OC',spec:'Setter & Attack',days:[1,2,3,4,5,6],hrStart:8,hrEnd:19},
@@ -887,13 +901,28 @@ function pickDur(el,mins){
 function buildPkgGrid(){
   var pkgs=getPackages();
   var html='';
-  pkgs.forEach(function(pk){
-    html+='<div class="pkg-card" id="pkg_'+pk.id+'" onclick="pickPkg(\''+pk.id+'\')">'
+  var isFeaturedIdx=Math.floor(pkgs.length/2); // middle card is featured
+  pkgs.forEach(function(pk,idx){
+    var isFeatured=(pkgs.length>=3&&idx===isFeaturedIdx);
+    var spotsHtml='';
+    if(pk.showSpots&&pk.spotsLeft!=null){
+      spotsHtml='<span class="pkg-urgency-spots">🔥 '+pk.spotsLeft+' spot'+(pk.spotsLeft===1?'':'s')+' left</span>';
+    }
+    var validHtml='';
+    if(pk.showValidity&&pk.validDays){
+      validHtml='<span class="pkg-urgency-time">⏱ Valid '+pk.validDays+' days</span>';
+    }
+    html+='<div class="pkg-card'+(isFeatured?' featured':'')+'" id="pkg_'+pk.id+'" onclick="pickPkg(\''+pk.id+'\')">'
+      +(isFeatured?'<div class="pkg-featured-ribbon">⭐ Most Popular</div>':'')
       +'<div class="pkg-check">✓</div>'
       +'<div class="pkg-top"><div class="pkg-name">'+esc(pk.name)+'</div><div class="pkg-price">$'+pk.price+'</div></div>'
-      +'<div class="pkg-desc">'+pk.sessions+' sessions of '+esc(pk.svc)+'</div>'
-      +'<span class="pkg-savings">'+esc(pk.discount)+'</span>'
-      +'</div>';
+      +'<div class="pkg-desc">'+pk.sessions+' sessions · '+esc(pk.svc)+'</div>'
+      +'<div class="pkg-badges">'
+        +'<span class="pkg-savings">🏷 '+esc(pk.discount)+'</span>'
+        +spotsHtml
+        +validHtml
+      +'</div>'
+    +'</div>';
   });
   document.getElementById('pkgGrid').innerHTML=html;
 }
@@ -1433,8 +1462,11 @@ function savePrices(){
 function buildPkgEditor(){
   var pkgs=getPackages();var html='';
   pkgs.forEach(function(pk){
-    html+='<div class="pke-card">'
-      +'<div class="pke-title">📦 '+esc(pk.name)+'</div>'
+    html+='<div class="pke-card" style="position:relative;">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">'
+        +'<div class="pke-title" style="margin-bottom:0;">📦 '+esc(pk.name)+'</div>'
+        +'<button onclick="deletePkg(\''+pk.id+'\')" style="background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.25);color:#ff6b6b;font-size:12px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;">🗑 Remove</button>'
+      +'</div>'
       +'<div class="pke-row">'
         +'<div class="pke-field"><div class="pe-lbl">Package Name</div><input class="pe-note" id="pkn_'+pk.id+'" value="'+esc(pk.name)+'"></div>'
         +'<div class="pke-field"><div class="pe-lbl">Sessions</div><input class="pe-note" type="number" id="pks_'+pk.id+'" value="'+pk.sessions+'" min="2"></div>'
@@ -1443,12 +1475,29 @@ function buildPkgEditor(){
         +'<div class="pke-field"><div class="pe-lbl">Total Price ($)</div><div class="pe-price-row"><span class="pe-sym">$</span><input type="number" id="pkp_'+pk.id+'" value="'+pk.price+'" min="0"></div></div>'
         +'<div class="pke-field"><div class="pe-lbl">Discount Label</div><input class="pe-note" id="pkd_'+pk.id+'" value="'+esc(pk.discount)+'"></div>'
       +'</div>'
-      +'<div class="pke-field"><div class="pe-lbl">Service</div>'
+      +'<div class="pke-field" style="margin-bottom:10px;"><div class="pe-lbl">Service</div>'
         +'<select class="pe-note" id="pksvc_'+pk.id+'" style="appearance:none;cursor:pointer;">'
         +['1-on-1 Private Training','Skills Assessment','Group Session','Strategy & Film Review'].map(function(s){
           return'<option value="'+s+'"'+(pk.svc===s?' selected':'')+'>'+s+'</option>';
         }).join('')
         +'</select>'
+      +'</div>'
+      +'<div style="background:rgba(255,92,0,.06);border:1px solid rgba(255,92,0,.18);border-radius:10px;padding:12px;margin-top:4px;">'
+        +'<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--acc2);margin-bottom:10px;">⚡ Urgency Settings</div>'
+        +'<div class="pke-row">'
+          +'<div class="pke-field"><div class="pe-lbl">Valid for (days)</div><input class="pe-note" type="number" id="pkv_'+pk.id+'" value="'+(pk.validDays||60)+'" min="0" placeholder="e.g. 60"></div>'
+          +'<div class="pke-field"><div class="pe-lbl">Spots Left</div><input class="pe-note" type="number" id="pksp_'+pk.id+'" value="'+(pk.spotsLeft!=null?pk.spotsLeft:'')+'" min="0" placeholder="e.g. 3"></div>'
+        +'</div>'
+        +'<div class="pke-row" style="margin-top:10px;">'
+          +'<div class="pke-field" style="flex-direction:row;align-items:center;gap:8px;">'
+            +'<input type="checkbox" id="pkshowv_'+pk.id+'"'+(pk.showValidity?' checked':'')+' style="width:16px;height:16px;accent-color:var(--acc2);">'
+            +'<div class="pe-lbl" style="margin-bottom:0;">Show "Valid X days"</div>'
+          +'</div>'
+          +'<div class="pke-field" style="flex-direction:row;align-items:center;gap:8px;">'
+            +'<input type="checkbox" id="pkshowsp_'+pk.id+'"'+(pk.showSpots?' checked':'')+' style="width:16px;height:16px;accent-color:var(--acc2);">'
+            +'<div class="pe-lbl" style="margin-bottom:0;">Show "X spots left"</div>'
+          +'</div>'
+        +'</div>'
       +'</div>'
     +'</div>';
   });
@@ -1461,11 +1510,31 @@ function savePackages(){
     var nEl=document.getElementById('pkn_'+pk.id);var sEl=document.getElementById('pks_'+pk.id);
     var pEl=document.getElementById('pkp_'+pk.id);var dEl=document.getElementById('pkd_'+pk.id);
     var svcEl=document.getElementById('pksvc_'+pk.id);
+    var vEl=document.getElementById('pkv_'+pk.id);var spEl=document.getElementById('pksp_'+pk.id);
+    var showvEl=document.getElementById('pkshowv_'+pk.id);var showspEl=document.getElementById('pkshowsp_'+pk.id);
     if(nEl)pk.name=nEl.value;if(sEl)pk.sessions=Number(sEl.value)||4;
     if(pEl)pk.price=Number(pEl.value)||0;if(dEl)pk.discount=dEl.value;
     if(svcEl)pk.svc=svcEl.value;
+    if(vEl)pk.validDays=Number(vEl.value)||0;
+    if(spEl)pk.spotsLeft=spEl.value!==''?Number(spEl.value):null;
+    if(showvEl)pk.showValidity=showvEl.checked;
+    if(showspEl)pk.showSpots=showspEl.checked;
   });
-  lsSet('vt_packages',pkgs);buildPkgGrid();showToast('✅ Packages saved!');
+  lsSet('vt_packages',pkgs);buildPkgGrid();buildPkgEditor();showToast('✅ Packages saved!');
+}
+
+function deletePkg(id){
+  if(!confirm('Remove this package?'))return;
+  lsSet('vt_packages',getPackages().filter(function(p){return p.id!==id;}));
+  buildPkgGrid();buildPkgEditor();showToast('Package removed.');
+}
+
+function addNewPkg(){
+  var pkgs=getPackages();
+  pkgs.push({id:'pk_'+Date.now(),name:'New Package',sessions:4,discount:'Save 10%',price:200,svc:'1-on-1 Private Training',validDays:60,spotsLeft:5,showSpots:true,showValidity:true});
+  lsSet('vt_packages',pkgs);buildPkgGrid();buildPkgEditor();
+  setTimeout(function(){var grid=document.getElementById('pkgEditorGrid');if(grid)grid.lastElementChild.scrollIntoView({behavior:'smooth'});},80);
+  showToast('New package added — fill in details and save.');
 }
 
 /* ── BLOCK DATES ── */
@@ -1595,6 +1664,8 @@ function showToast(msg){var t=document.getElementById('toast');t.textContent=msg
    INIT
 ──────────────────────────── */
 (function(){
+  // Clear old package data so renamed defaults load fresh
+  if(!lsGet('vt_pkg_v2',false)){localStorage.removeItem('vt_packages');lsSet('vt_pkg_v2',true);}
   var t=lsGet('vt_theme','bold');setTheme(t);
   buildSvcGrid();buildPkgGrid();renderCal();
   if(EJS_READY)document.getElementById('ejsNotice').style.display='none';
