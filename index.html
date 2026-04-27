@@ -845,9 +845,12 @@ textarea.form-input{resize:vertical;min-height:80px;}
 
       <!-- PRICES TAB -->
       <div class="tab-panel" id="tab-prices">
-        <div class="section-hdr"><div class="section-title">Session Pricing</div><div class="section-sub">Set prices per service per duration. Changes apply to the booking page instantly.</div></div>
+        <div class="section-hdr"><div class="section-title">Session Pricing</div><div class="section-sub">Set prices per service per duration. Rename, hide, or mark as sold out. Changes apply to the booking page instantly.</div></div>
         <div class="pe-grid" id="peGrid"></div>
-        <button class="btn-primary" style="max-width:260px;" onclick="savePrices()">💾 Save All Prices</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn-primary" style="max-width:220px;" onclick="savePrices()">💾 Save All Prices</button>
+          <button class="btn-secondary" onclick="addNewSvc()">+ Add Session Type</button>
+        </div>
       </div>
 
       <!-- PACKAGES TAB -->
@@ -907,10 +910,10 @@ function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
    DEFAULTS
 ──────────────────────────── */
 var DEF_PRICES = [
-  {id:'p1',name:'1-on-1 Private Training',emoji:'🏐',prices:{30:45,60:75,90:100,120:130},note:'+ court fee'},
-  {id:'p2',name:'Skills Assessment',emoji:'📋',prices:{30:25,60:35,90:50,120:65},note:'+ court fee'},
-  {id:'p3',name:'Group Session',emoji:'👥',prices:{30:20,60:35,90:50,120:60},note:'/player + court fee'},
-  {id:'p4',name:'Strategy & Film Review',emoji:'🎬',prices:{30:25,60:40,90:55,120:70},note:'No court fee!'}
+  {id:'p1',name:'1-on-1 Private Training',emoji:'🏐',prices:{30:45,60:75,90:100,120:130},note:'+ court fee',hidden:false,spotsLeft:null,showSpots:false},
+  {id:'p2',name:'Skills Assessment',emoji:'📋',prices:{30:25,60:35,90:50,120:65},note:'+ court fee',hidden:false,spotsLeft:null,showSpots:false},
+  {id:'p3',name:'Group Session',emoji:'👥',prices:{30:20,60:35,90:50,120:60},note:'/player + court fee',hidden:false,spotsLeft:null,showSpots:false},
+  {id:'p4',name:'Strategy & Film Review',emoji:'🎬',prices:{30:25,60:40,90:55,120:70},note:'No court fee!',hidden:false,spotsLeft:null,showSpots:false}
 ];
 var DEF_PACKAGES = [
   {id:'pk1',name:'Foundation Pack',sessions:4,discount:'Save 10%',price:270,svc:'1-on-1 Private Training',validDays:60,spotsLeft:3,showSpots:true,showValidity:true,badge:'',hidden:false},
@@ -1005,13 +1008,27 @@ function buildSvcGrid(){
   var prices=getPrices();
   var html='';
   prices.forEach(function(p){
-    html+='<div class="svc-card" id="svc_'+p.id+'" onclick="pickSvc(\''+p.id+'\')">'
+    if(p.hidden)return; // skip hidden services on booking page
+    var isSoldOut=(p.spotsLeft!=null&&p.spotsLeft===0);
+    var cardCls='svc-card'+(isSoldOut?' sold-out':'');
+    var spotsHtml='';
+    if(p.showSpots&&p.spotsLeft!=null&&p.spotsLeft>0){
+      spotsHtml='<div style="margin-top:5px;"><span class="pkg-urgency-spots">🔥 '+p.spotsLeft+' spot'+(p.spotsLeft===1?'':'s')+' left</span></div>';
+    }
+    var inner='<div class="'+cardCls+'" id="svc_'+p.id+'" onclick="pickSvc(\''+p.id+'\')">'
       +'<div class="svc-check">✓</div>'
-      +'<div class="svc-row"><div class="svc-emo">'+p.emoji+'</div><div class="svc-name-wrap"><div class="svc-name">'+esc(p.name)+'</div><div class="svc-fee">'+esc(p.note)+'</div></div></div>'
+      +'<div class="svc-row"><div class="svc-emo">'+esc(p.emoji)+'</div><div class="svc-name-wrap"><div class="svc-name">'+esc(p.name)+'</div><div class="svc-fee">'+esc(p.note)+'</div></div></div>'
       +'<div class="svc-price-table" id="spt_'+p.id+'"></div>'
+      +spotsHtml
       +'</div>';
+
+    if(isSoldOut){
+      html+='<div class="svc-sold-container">'+inner+'<div class="sold-out-stamp">SOLD OUT</div></div>';
+    } else {
+      html+=inner;
+    }
   });
-  document.getElementById('svcGrid').innerHTML=html;
+  document.getElementById('svcGrid').innerHTML=html||'<div style="color:var(--muted);font-size:13px;padding:12px 0;">No session types available right now.</div>';
   renderPriceTables();
 }
 
@@ -1019,6 +1036,7 @@ function renderPriceTables(){
   var prices=getPrices();
   var durs=[30,60,90,120];
   prices.forEach(function(p){
+    if(p.hidden)return;
     var pp=p.prices||{};
     var html='';
     durs.forEach(function(d){
@@ -1039,6 +1057,7 @@ function pickSvc(id){
   var prices=getPrices();
   var p=null;prices.forEach(function(x){if(x.id===id)p=x;});
   if(!p)return;
+  if(p.spotsLeft!=null&&p.spotsLeft===0)return; // sold out — block selection
   document.querySelectorAll('.svc-card').forEach(function(c){c.classList.remove('active');});
   var el=document.getElementById('svc_'+id);if(el)el.classList.add('active');
   B.svc=p.name;B.svcId=id;B.isPkg=false;B.pkgId='';
@@ -1929,16 +1948,52 @@ function buildPriceEditor(){
   var prices=getPrices();var html='';
   prices.forEach(function(p){
     var pp=p.prices||{};
-    html+='<div class="pe-card">'
-      +'<div class="pe-top"><div class="pe-emo">'+p.emoji+'</div><div class="pe-name">'+esc(p.name)+'</div></div>'
-      +'<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;">Price by Duration</div>'
+    var isSoldOut=(p.spotsLeft!=null&&p.spotsLeft===0);
+    var isHidden=!!p.hidden;
+    var statusPill=isSoldOut
+      ?'<span style="background:rgba(185,28,28,.2);color:#fca5a5;border:1px solid rgba(220,38,38,.3);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:800;">🚫 SOLD OUT</span>'
+      :isHidden
+        ?'<span class="hidden-tag">👁 Hidden</span>'
+        :'<span style="background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.25);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:800;">✓ Visible</span>';
+
+    html+='<div class="pe-card '+(isHidden?'pkg-hidden-dim':'')+'">'
+      // Header
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">'
+        +'<div style="display:flex;align-items:center;gap:8px;">'
+          +'<input id="peemoji_'+p.id+'" value="'+esc(p.emoji)+'" style="width:38px;background:transparent;border:none;outline:none;font-size:22px;cursor:pointer;text-align:center;" title="Click to change emoji">'
+          +'<input id="pename_'+p.id+'" value="'+esc(p.name)+'" style="background:transparent;border:none;border-bottom:1px dashed var(--bdr);outline:none;font-size:15px;font-weight:700;color:var(--txt);font-family:var(--fb);min-width:0;flex:1;" title="Click to rename">'
+          +statusPill
+        +'</div>'
+        +'<button onclick="deleteSvc(\''+p.id+'\')" style="background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.25);color:#ff6b6b;font-size:12px;font-weight:700;padding:5px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;flex-shrink:0;">🗑 Delete</button>'
+      +'</div>'
+      // Hide toggle
+      +'<div class="admin-tog-row">'
+        +'<div class="admin-tog-lbl">👁 '+(isHidden?'Hidden from booking page':'Visible on booking page')+'</div>'
+        +'<label class="tog-switch"><input type="checkbox" id="pehide_'+p.id+'"'+(isHidden?'':' checked')+' onchange="toggleSvcHide(\''+p.id+'\',this)"><span class="tog-slider"></span></label>'
+      +'</div>'
+      // Prices by duration
+      +'<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;margin-top:6px;">Price by Duration</div>'
       +'<div class="pe-dur-grid">'
       +[30,60,90,120].map(function(d){
-        return '<div class="pe-dur-item"><div class="pe-dur-lbl">'+d+'min</div><div class="pe-price-row"><span class="pe-sym">$</span><input type="number" id="pe_'+p.id+'_'+d+'" value="'+(pp[d]||'')+'" min="0" step="5" placeholder="—"></div></div>';
+        return'<div class="pe-dur-item"><div class="pe-dur-lbl">'+d+'min</div><div class="pe-price-row"><span class="pe-sym">$</span><input type="number" id="pe_'+p.id+'_'+d+'" value="'+(pp[d]||'')+'" min="0" step="5" placeholder="—"></div></div>';
       }).join('')
       +'</div>'
+      // Fee note
       +'<div class="pe-field"><div class="pe-lbl">Fee Note</div><input class="pe-note" type="text" id="penote_'+p.id+'" value="'+esc(p.note)+'" placeholder="+ court fee"></div>'
-      +'</div>';
+      // Spots / Sold Out
+      +'<div style="background:rgba(255,92,0,.06);border:1px solid rgba(255,92,0,.18);border-radius:10px;padding:12px;margin-top:10px;">'
+        +'<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--acc2);margin-bottom:10px;">🚫 Sold Out Settings</div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end;">'
+          +'<div class="pe-dur-item"><div class="pe-dur-lbl">Spots Left <span style="font-weight:400;color:var(--muted);">(0 = Sold Out)</span></div>'
+            +'<div class="pe-price-row"><span class="pe-sym" style="color:var(--acc2);">🎟</span><input type="number" id="pesp_'+p.id+'" value="'+(p.spotsLeft!=null?p.spotsLeft:'')+'" min="0" placeholder="unlimited" onchange="previewSvcSoldOut(\''+p.id+'\',this.value)"></div>'
+          +'</div>'
+          +'<div class="pe-dur-item" style="flex-direction:row;align-items:center;gap:8px;padding-bottom:2px;">'
+            +'<input type="checkbox" id="peshowsp_'+p.id+'"'+(p.showSpots?' checked':'')+' style="width:16px;height:16px;accent-color:var(--acc2);flex-shrink:0;">'
+            +'<div class="pe-dur-lbl" style="margin-bottom:0;">Show spots count</div>'
+          +'</div>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
   });
   document.getElementById('peGrid').innerHTML=html;
 }
@@ -1946,16 +2001,55 @@ function buildPriceEditor(){
 function savePrices(){
   var prices=getPrices();
   prices.forEach(function(p){
+    var nameEl=document.getElementById('pename_'+p.id);var emojiEl=document.getElementById('peemoji_'+p.id);
+    if(nameEl)p.name=nameEl.value;if(emojiEl)p.emoji=emojiEl.value;
     var pp={};
     [30,60,90,120].forEach(function(d){
       var el=document.getElementById('pe_'+p.id+'_'+d);
       if(el&&el.value)pp[d]=Number(el.value);
     });
     p.prices=pp;
-    var nEl=document.getElementById('penote_'+p.id);
-    if(nEl)p.note=nEl.value;
+    var nEl=document.getElementById('penote_'+p.id);if(nEl)p.note=nEl.value;
+    var spEl=document.getElementById('pesp_'+p.id);
+    var showspEl=document.getElementById('peshowsp_'+p.id);
+    var hideEl=document.getElementById('pehide_'+p.id);
+    if(spEl)p.spotsLeft=spEl.value!==''?Number(spEl.value):null;
+    if(showspEl)p.showSpots=showspEl.checked;
+    if(hideEl)p.hidden=!hideEl.checked;
   });
-  lsSet('vt_prices2',prices);buildSvcGrid();showToast('✅ Prices saved!');
+  lsSet('vt_prices2',prices);buildSvcGrid();buildPriceEditor();showToast('✅ Prices saved!');
+}
+
+function toggleSvcHide(id,checkbox){
+  var prices=getPrices();
+  prices.forEach(function(p){if(p.id===id)p.hidden=!checkbox.checked;});
+  lsSet('vt_prices2',prices);buildSvcGrid();buildPriceEditor();
+}
+
+function previewSvcSoldOut(id,val){
+  var n=Number(val);
+  if(!isNaN(n)&&n===0)showToast('⚠️ Setting to 0 will mark this service as SOLD OUT.');
+}
+
+function deleteSvc(id){
+  if(!confirm('Delete this service type? This cannot be undone.'))return;
+  var prices=getPrices().filter(function(p){return p.id!==id;});
+  lsSet('vt_prices2',prices);buildSvcGrid();buildPriceEditor();showToast('Service deleted.');
+}
+
+function addNewSvc(){
+  var prices=getPrices();
+  var newId='p_'+Date.now();
+  prices.push({id:newId,name:'New Session Type',emoji:'📌',prices:{30:0,60:0,90:0,120:0},note:'',hidden:false,spotsLeft:null,showSpots:false});
+  lsSet('vt_prices2',prices);
+  buildSvcGrid();buildPriceEditor();
+  setTimeout(function(){
+    var grid=document.getElementById('peGrid');
+    if(grid)grid.lastElementChild.scrollIntoView({behavior:'smooth'});
+    var nameEl=document.getElementById('pename_'+newId);
+    if(nameEl){nameEl.focus();nameEl.select();}
+  },80);
+  showToast('New service added — fill in the name and prices, then save.');
 }
 
 /* ── PACKAGE EDITOR ── */
@@ -1985,10 +2079,7 @@ function buildPkgEditor(){
       +'<div class="pke-row">'
         +'<div class="pke-field"><div class="pe-lbl">Package Name</div><input class="pe-note" id="pkn_'+pk.id+'" value="'+esc(pk.name)+'"></div>'
         +'<div class="pke-field"><div class="pe-lbl">Sessions</div>'
-          +'<div style="display:flex;gap:6px;align-items:center;">'
-            +'<input class="pe-note" type="number" id="pks_'+pk.id+'" value="'+pk.sessions+'" min="1" style="flex:1;">'
-            +'<button onclick="addSessionToPkg(\''+pk.id+'\')" style="padding:8px 12px;border-radius:8px;background:var(--sel-bg);border:1px solid var(--acc);color:var(--acc);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Session</button>'
-          +'</div>'
+          +'<input class="pe-note" type="number" id="pks_'+pk.id+'" value="'+pk.sessions+'" min="1">'
         +'</div>'
       +'</div>'
       +'<div class="pke-row">'
@@ -2251,6 +2342,8 @@ function showToast(msg){var t=document.getElementById('toast');t.textContent=msg
    INIT
 ──────────────────────────── */
 (function(){
+  // Clear old prices data so hidden/spotsLeft fields load fresh
+  if(!lsGet('vt_prices_v2',false)){localStorage.removeItem('vt_prices2');lsSet('vt_prices_v2',true);}
   // Clear old package data so renamed defaults + badge fields load fresh
   if(!lsGet('vt_pkg_v4',false)){localStorage.removeItem('vt_packages');lsSet('vt_pkg_v4',true);}
   // Clear old coach data so badge fields load fresh
