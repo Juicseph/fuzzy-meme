@@ -36,10 +36,15 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .admin-pill,.theme-bar{pointer-events:all;background:rgba(0,0,0,.45);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);border-radius:100px;}
 .admin-pill{padding:8px 16px;font-size:11px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:.06em;cursor:pointer;transition:all .2s;}
 .admin-pill:hover{color:#fff;}
-.theme-bar{display:flex;align-items:center;gap:6px;padding:6px 10px;}
-.th-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.35);padding-right:2px;}
-.th-dot{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;outline:none;}
-.th-dot:hover{transform:scale(1.15);}
+.theme-bar{display:flex;align-items:center;gap:0;padding:0;overflow:hidden;transition:all .3s cubic-bezier(.22,1,.36,1);}
+.theme-toggle-btn{display:flex;align-items:center;gap:6px;padding:7px 13px;cursor:pointer;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.06em;white-space:nowrap;background:none;border:none;transition:color .2s;}
+.theme-toggle-btn:hover{color:#fff;}
+.theme-toggle-btn .th-arrow{font-size:10px;transition:transform .3s;display:inline-block;}
+.theme-bar.open .theme-toggle-btn .th-arrow{transform:rotate(180deg);}
+.theme-dots{display:flex;align-items:center;gap:6px;padding:0 10px 0 0;max-width:0;overflow:hidden;opacity:0;transition:max-width .35s cubic-bezier(.22,1,.36,1), opacity .25s, padding .3s;}
+.theme-bar.open .theme-dots{max-width:160px;opacity:1;padding:0 10px 0 0;}
+.th-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;outline:none;flex-shrink:0;}
+.th-dot:hover{transform:scale(1.18);}
 .th-dot.on{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.2);}
 .th-dot[data-t="bold"]{background:linear-gradient(135deg,#CCFF00,#FF5C00);}
 .th-dot[data-t="sleek"]{background:linear-gradient(135deg,#111,#E8C97A);}
@@ -128,10 +133,19 @@ header{text-align:center;padding:70px 20px 36px;position:relative;z-index:1;}
 .pkg-urgency-time{display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,.07);color:var(--muted);font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;}
 .pkg-check{position:absolute;top:10px;right:10px;width:18px;height:18px;background:var(--acc);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--on-acc);font-weight:800;opacity:0;transition:opacity .2s;}
 .pkg-card.active .pkg-check{opacity:1;}
-.pkg-featured-ribbon{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--acc);color:var(--on-acc);font-size:9px;font-weight:800;padding:3px 12px;border-radius:0 0 8px 8px;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;}
-.pkg-value-ribbon{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#a855f7,#6366f1);color:white;font-size:9px;font-weight:800;padding:3px 12px;border-radius:0 0 8px 8px;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;}
-.pkg-card.best-value{border-color:rgba(168,85,247,.35);}
-.pkg-card.best-value:hover{border-color:#a855f7;}
+.pkg-featured-ribbon,.pkg-value-ribbon,[class^="pkg-ribbon-"]{position:absolute;top:-1px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:800;padding:3px 12px;border-radius:0 0 8px 8px;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;color:white;}
+.pkg-ribbon-popular{background:linear-gradient(135deg,#CCFF00,#99cc00);color:#080C1E !important;}
+.pkg-ribbon-value{background:linear-gradient(135deg,#a855f7,#6366f1);}
+.pkg-ribbon-coach{background:linear-gradient(135deg,#06b6d4,#0284c7);}
+.pkg-ribbon-starter{background:linear-gradient(135deg,#22c55e,#16a34a);}
+.pkg-ribbon-fastest{background:linear-gradient(135deg,#f97316,#dc2626);}
+.pkg-ribbon-limited{background:linear-gradient(135deg,#FF5C00,#cc4800);}
+.pkg-card.pkg-featured{border-color:rgba(204,255,0,.4);}
+.pkg-card.pkg-best-value{border-color:rgba(168,85,247,.4);}
+.pkg-card.pkg-limited{border-color:rgba(255,92,0,.4);}
+.pkg-card.pkg-featured:hover{border-color:rgba(204,255,0,.8);}
+.pkg-card.pkg-best-value:hover{border-color:#a855f7;}
+.pkg-card.pkg-limited:hover{border-color:rgba(255,92,0,.8);}
 .or-divider{text-align:center;font-size:12px;color:var(--muted);margin:16px 0;display:flex;align-items:center;gap:12px;}
 .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--bdr);}
 
@@ -456,12 +470,16 @@ textarea.form-input{resize:vertical;min-height:80px;}
 <!-- TOP BAR -->
 <div class="top-bar">
   <button class="admin-pill" onclick="showAdmin()">🔐 Admin</button>
-  <div class="theme-bar">
-    <span class="th-lbl">Theme</span>
-    <button class="th-dot on" data-t="bold" onclick="setTheme('bold')"></button>
-    <button class="th-dot" data-t="sleek" onclick="setTheme('sleek')"></button>
-    <button class="th-dot" data-t="warm" onclick="setTheme('warm')"></button>
-    <button class="th-dot" data-t="clean" onclick="setTheme('clean')"></button>
+  <div class="theme-bar" id="themeBar">
+    <button class="theme-toggle-btn" onclick="toggleThemeBar()">
+      🎨 Theme <span class="th-arrow">▾</span>
+    </button>
+    <div class="theme-dots">
+      <button class="th-dot on" data-t="bold" onclick="setTheme('bold')" title="Bold"></button>
+      <button class="th-dot" data-t="sleek" onclick="setTheme('sleek')" title="Sleek"></button>
+      <button class="th-dot" data-t="warm" onclick="setTheme('warm')" title="Warm"></button>
+      <button class="th-dot" data-t="clean" onclick="setTheme('clean')" title="Clean"></button>
+    </div>
   </div>
 </div>
 
@@ -823,9 +841,17 @@ function setTheme(t){
   lsSet('vt_theme',t);
 }
 
-/* ────────────────────────────
-   REMINDER NUDGE
-──────────────────────────── */
+function toggleThemeBar(){
+  var bar=document.getElementById('themeBar');
+  if(bar)bar.classList.toggle('open');
+}
+// Close theme bar when clicking outside
+document.addEventListener('click',function(e){
+  var bar=document.getElementById('themeBar');
+  if(bar&&bar.classList.contains('open')&&!bar.contains(e.target)){
+    bar.classList.remove('open');
+  }
+});
 function checkReminder(){
   var bookings=getBookings();
   if(!bookings.length)return;
@@ -858,27 +884,34 @@ function buildSvcGrid(){
   var prices=getPrices();
   var html='';
   prices.forEach(function(p){
+    html+='<div class="svc-card" id="svc_'+p.id+'" onclick="pickSvc(\''+p.id+'\')">'
+      +'<div class="svc-check">✓</div>'
+      +'<div class="svc-row"><div class="svc-emo">'+p.emoji+'</div><div class="svc-name-wrap"><div class="svc-name">'+esc(p.name)+'</div><div class="svc-fee">'+esc(p.note)+'</div></div></div>'
+      +'<div class="svc-price-table" id="spt_'+p.id+'"></div>'
+      +'</div>';
+  });
+  document.getElementById('svcGrid').innerHTML=html;
+  renderPriceTables();
+}
+
+function renderPriceTables(){
+  var prices=getPrices();
+  var durs=[30,60,90,120];
+  prices.forEach(function(p){
     var pp=p.prices||{};
-    var durs=[30,60,90,120];
-    var priceRowHtml='';
+    var html='';
     durs.forEach(function(d){
       var price=pp[d];
       var label=d===120?'2hr':d+'m';
-      priceRowHtml+='<div class="svc-dur-cell" id="sdur_'+p.id+'_'+d+'">'
+      var isActive=(d===B.dur);
+      html+='<div class="svc-dur-cell'+(isActive?' active-dur':'')+'">'
         +'<div class="svc-dur-label">'+label+'</div>'
         +'<div class="svc-dur-price">'+(price!=null?'$'+price:'—')+'</div>'
         +'</div>';
     });
-    html+='<div class="svc-card" id="svc_'+p.id+'" onclick="pickSvc(\''+p.id+'\')">'
-      +'<div class="svc-check">✓</div>'
-      +'<div class="svc-row"><div class="svc-emo">'+p.emoji+'</div><div class="svc-name-wrap"><div class="svc-name">'+esc(p.name)+'</div><div class="svc-fee">'+esc(p.note)+'</div></div></div>'
-      +'<div class="svc-price-table" id="spt_'+p.id+'">'
-        +priceRowHtml
-      +'</div>'
-      +'</div>';
+    var el=document.getElementById('spt_'+p.id);
+    if(el)el.innerHTML=html;
   });
-  document.getElementById('svcGrid').innerHTML=html;
-  highlightDurCells();
 }
 
 function pickSvc(id){
@@ -892,23 +925,10 @@ function pickSvc(id){
   updateDurHint();
 }
 
-function highlightDurCells(){
-  // Remove all highlights first
-  document.querySelectorAll('.svc-dur-cell').forEach(function(el){
-    el.classList.remove('active-dur');
-  });
-  // Highlight the selected duration column across all service cards
-  var prices=getPrices();
-  prices.forEach(function(p){
-    var cell=document.getElementById('sdur_'+p.id+'_'+B.dur);
-    if(cell)cell.classList.add('active-dur');
-  });
-}
-
 function updateDurHint(){
-  highlightDurCells();
+  renderPriceTables();
   var hint=document.getElementById('durHint');
-  if(!B.svcId){hint.textContent='';return;}
+  if(!B.svcId){hint.innerHTML='<span style="color:var(--muted);font-size:12px;">← Select a service above to see pricing</span>';return;}
   var prices=getPrices();
   var p=null;prices.forEach(function(x){if(x.id===B.svcId)p=x;});
   if(!p){hint.textContent='';return;}
@@ -917,9 +937,9 @@ function updateDurHint(){
   if(price!=null){
     B.svcPrice=price;
     B.svcLabel='$'+price+' — '+p.note;
-    hint.innerHTML='<span style="color:var(--acc);font-weight:800;">$'+price+'</span> for '+B.dur+' min · '+esc(p.note);
+    hint.innerHTML='<span style="color:var(--acc);font-weight:800;font-size:15px;">$'+price+'</span><span style="color:var(--muted);font-size:13px;"> for '+B.dur+' min · '+esc(p.note)+'</span>';
   } else {
-    hint.innerHTML='<span style="color:var(--muted);">No price set for '+B.dur+' min — set it in Admin → Prices</span>';
+    hint.innerHTML='<span style="color:var(--muted);font-size:12px;">No price set for '+B.dur+' min — add it in Admin → Prices</span>';
   }
 }
 
@@ -929,7 +949,7 @@ function updateDurHint(){
 function pickDur(el,mins){
   document.querySelectorAll('.pill').forEach(function(p){p.classList.remove('active');});
   el.classList.add('active');B.dur=mins;
-  highlightDurCells();
+  renderPriceTables();
   updateDurHint();
 }
 
@@ -940,8 +960,6 @@ function buildPkgGrid(){
   var pkgs=getPackages();
   var html='';
   pkgs.forEach(function(pk){
-    var isFeatured=pk.badge==='popular';
-    var isValue=pk.badge==='value';
     var spotsHtml='';
     if(pk.showSpots&&pk.spotsLeft!=null){
       spotsHtml='<span class="pkg-urgency-spots">🔥 '+pk.spotsLeft+' spot'+(pk.spotsLeft===1?'':'s')+' left</span>';
@@ -951,10 +969,24 @@ function buildPkgGrid(){
       validHtml='<span class="pkg-urgency-time">⏱ Valid '+pk.validDays+' days</span>';
     }
     var ribbonHtml='';
-    if(isFeatured) ribbonHtml='<div class="pkg-featured-ribbon">⭐ Most Popular</div>';
-    else if(isValue) ribbonHtml='<div class="pkg-value-ribbon">💎 Best Value</div>';
+    var badge=pk.badge||'';
+    var ribbonMap={
+      'popular': {cls:'pkg-ribbon-popular', text:'⭐ Most Popular'},
+      'value':   {cls:'pkg-ribbon-value',   text:'💎 Best Value'},
+      'coach':   {cls:'pkg-ribbon-coach',   text:'🧠 Coach Recommended'},
+      'starter': {cls:'pkg-ribbon-starter', text:'🚀 Starter Friendly'},
+      'fastest': {cls:'pkg-ribbon-fastest', text:'🔥 Fastest Results'},
+      'limited': {cls:'pkg-ribbon-limited', text:'⚡ Limited Spots'}
+    };
+    if(badge&&ribbonMap[badge]){
+      ribbonHtml='<div class="'+ribbonMap[badge].cls+'">'+ribbonMap[badge].text+'</div>';
+    }
+    var cardCls='pkg-card';
+    if(badge==='popular')cardCls+=' pkg-featured';
+    if(badge==='value')cardCls+=' pkg-best-value';
+    if(badge==='limited')cardCls+=' pkg-limited';
 
-    html+='<div class="pkg-card'+(isFeatured?' featured':'')+(isValue?' best-value':'')+'" id="pkg_'+pk.id+'" onclick="pickPkg(\''+pk.id+'\')">'
+    html+='<div class="'+cardCls+'" id="pkg_'+pk.id+'" onclick="pickPkg(\''+pk.id+'\')">'
       +ribbonHtml
       +'<div class="pkg-check">✓</div>'
       +'<div class="pkg-top"><div class="pkg-name">'+esc(pk.name)+'</div><div class="pkg-price">$'+pk.price+'</div></div>'
@@ -1529,6 +1561,10 @@ function buildPkgEditor(){
         +'<option value=""'+((!pk.badge||pk.badge==='')?'selected':'')+'>None</option>'
         +'<option value="popular"'+(pk.badge==='popular'?' selected':'')+'>⭐ Most Popular</option>'
         +'<option value="value"'+(pk.badge==='value'?' selected':'')+'>💎 Best Value</option>'
+        +'<option value="coach"'+(pk.badge==='coach'?' selected':'')+'>🧠 Coach Recommended</option>'
+        +'<option value="starter"'+(pk.badge==='starter'?' selected':'')+'>🚀 Starter Friendly</option>'
+        +'<option value="fastest"'+(pk.badge==='fastest'?' selected':'')+'>🔥 Fastest Results</option>'
+        +'<option value="limited"'+(pk.badge==='limited'?' selected':'')+'>⚡ Limited Spots</option>'
         +'</select>'
       +'</div>'
       +'<div style="background:rgba(255,92,0,.06);border:1px solid rgba(255,92,0,.18);border-radius:10px;padding:12px;margin-top:4px;">'
