@@ -36,7 +36,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .admin-pill,.theme-bar{pointer-events:all;background:rgba(0,0,0,.45);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);border-radius:100px;}
 .admin-pill{padding:8px 16px;font-size:11px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:.06em;cursor:pointer;transition:all .2s;}
 .admin-pill:hover{color:#fff;}
-.theme-bar{display:flex;align-items:center;gap:0;padding:0;overflow:hidden;transition:all .3s cubic-bezier(.22,1,.36,1);}
+.theme-bar{display:flex;align-items:center;gap:0;padding:0;overflow:hidden;transition:all .3s cubic-bezier(.22,1,.36,1);position:relative;}
 .theme-toggle-btn{display:flex;align-items:center;gap:6px;padding:7px 13px;cursor:pointer;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.06em;white-space:nowrap;background:none;border:none;transition:color .2s;}
 .theme-toggle-btn:hover{color:#fff;}
 .theme-toggle-btn .th-arrow{font-size:10px;transition:transform .3s;display:inline-block;}
@@ -482,6 +482,9 @@ textarea.form-input{resize:vertical;min-height:80px;}
 .cb-elite{background:linear-gradient(135deg,rgba(234,179,8,.2),rgba(245,158,11,.1));color:#fde047;border:1px solid rgba(234,179,8,.35);}
 .cb-high-perf{background:rgba(234,179,8,.15);color:#fcd34d;border:1px solid rgba(234,179,8,.3);}
 .cb-advanced{background:rgba(16,185,129,.2);color:#34d399;border:1px solid rgba(16,185,129,.3);}
+.cb-indoor{background:rgba(99,102,241,.2);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);}
+.cb-beach{background:rgba(234,179,8,.2);color:#fde68a;border:1px solid rgba(234,179,8,.3);}
+.cb-grass{background:rgba(34,197,94,.2);color:#86efac;border:1px solid rgba(34,197,94,.3);}
 .coach-bio-text{font-size:13px;color:var(--txt);line-height:1.65;margin-bottom:14px;}
 .coach-bio-contacts{display:flex;flex-wrap:wrap;gap:8px;}
 .coach-contact-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:100px;background:var(--surf2);border:1px solid var(--bdr);font-size:12px;font-weight:600;color:var(--txt);}
@@ -566,20 +569,9 @@ textarea.form-input{resize:vertical;min-height:80px;}
   </div>
 </div>
 
-<!-- TOP BAR -->
+<!-- TOP BAR — Admin pill only -->
 <div class="top-bar">
   <button class="admin-pill" onclick="showAdmin()">🔐 Admin</button>
-  <div class="theme-bar" id="themeBar">
-    <button class="theme-toggle-btn" onclick="toggleThemeBar()">
-      🎨 Theme <span class="th-arrow">▾</span>
-    </button>
-    <div class="theme-dots">
-      <button class="th-dot on" data-t="bold" onclick="setTheme('bold')" title="Bold"></button>
-      <button class="th-dot" data-t="sleek" onclick="setTheme('sleek')" title="Sleek"></button>
-      <button class="th-dot" data-t="warm" onclick="setTheme('warm')" title="Warm"></button>
-      <button class="th-dot" data-t="clean" onclick="setTheme('clean')" title="Clean"></button>
-    </div>
-  </div>
 </div>
 
 <!-- ══════════ BOOKING SITE ══════════ -->
@@ -613,9 +605,9 @@ textarea.form-input{resize:vertical;min-height:80px;}
 
   <!-- STEPS -->
   <div class="steps" id="stepBar">
-    <div class="step active" id="st1"><div class="step-n">1</div><span>Service</span></div>
+    <div class="step active" id="st1"><div class="step-n">1</div><span>Coach</span></div>
     <div class="step-line" id="sl1"></div>
-    <div class="step" id="st2"><div class="step-n">2</div><span>Coach</span></div>
+    <div class="step" id="st2"><div class="step-n">2</div><span>Service</span></div>
     <div class="step-line" id="sl2"></div>
     <div class="step" id="st3"><div class="step-n">3</div><span>Schedule</span></div>
     <div class="step-line" id="sl3"></div>
@@ -624,13 +616,24 @@ textarea.form-input{resize:vertical;min-height:80px;}
     <div class="step" id="st5"><div class="step-n">5</div><span>Confirm</span></div>
   </div>
 
-  <!-- S1: SERVICE -->
+  <!-- S1: COACH (now first) -->
   <div class="card screen active" id="sc1">
+    <div class="card-title">Select a Coach</div>
+    <div class="card-sub">Choose who you'd like to train with.</div>
+    <div class="coach-grid" id="coachGrid"></div>
+    <div class="coach-bio-panel" id="coachBioPanel"></div>
+    <div style="margin-top:20px;">
+      <button class="btn-primary" onclick="goTo(2)">Choose Your Service →</button>
+    </div>
+  </div>
+
+  <!-- S2: SERVICE + SURFACE (now second) -->
+  <div class="card screen" id="sc2">
     <div class="card-title">Choose Your Session</div>
-    <div class="card-sub">Select the type of coaching you need.</div>
+    <div class="card-sub" id="svcSubLbl">Select the type of coaching you need.</div>
     <div class="svc-grid" id="svcGrid"></div>
 
-    <div class="sec-label">Session Duration</div>
+    <div class="sec-label" style="margin-top:18px;">Session Duration</div>
     <div class="pill-row" id="durPills">
       <div class="pill" onclick="pickDur(this,30)">30 min</div>
       <div class="pill active" onclick="pickDur(this,60)">60 min</div>
@@ -639,24 +642,21 @@ textarea.form-input{resize:vertical;min-height:80px;}
     </div>
     <div class="dur-price-hint" id="durHint"></div>
 
-    <div class="or-divider">or book a package &amp; save more</div>
+    <div class="divider"></div>
+    <div class="sec-label">Court / Surface Type</div>
+    <div class="pill-row" id="surfacePills">
+      <div class="pill active" onclick="pickSurface(this,'Indoor')">🏟 Indoor</div>
+      <div class="pill" onclick="pickSurface(this,'Beach')">🏖 Beach</div>
+      <div class="pill" onclick="pickSurface(this,'Grass')">🌿 Grass</div>
+    </div>
 
+    <div class="or-divider">or book a package &amp; save more</div>
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
       <div class="pkg-label">📦 Session Packages</div>
       <div style="font-size:11px;font-weight:700;color:var(--acc2);background:rgba(255,92,0,.1);border:1px solid rgba(255,92,0,.22);padding:4px 10px;border-radius:100px;display:inline-flex;align-items:center;gap:5px;animation:spotsPulse 2.5s ease-in-out infinite;">⚡ Limited weekly spots</div>
     </div>
     <div class="pkg-grid" id="pkgGrid"></div>
 
-    <button class="btn-primary" onclick="goTo(2)">Pick a Coach →</button>
-  </div>
-
-  <!-- S2: COACH -->
-  <div class="card screen" id="sc2">
-    <div class="card-title">Select a Coach</div>
-    <div class="card-sub">Choose who you'd like to train with.</div>
-    <div class="coach-grid" id="coachGrid"></div>
-    <!-- Coach bio panel — shown on selection -->
-    <div class="coach-bio-panel" id="coachBioPanel"></div>
     <div class="btn-row">
       <button class="btn-secondary" onclick="goTo(1)">← Back</button>
       <button class="btn-primary" style="width:auto;flex:1;margin-top:0;" onclick="goTo(3)">Pick a Date →</button>
@@ -785,6 +785,15 @@ textarea.form-input{resize:vertical;min-height:80px;}
         <div><div class="brand-name">Volleyball Trainer</div><div class="brand-sub">Admin Dashboard</div></div>
       </div>
       <div class="admin-right">
+        <div class="theme-bar" id="themeBar">
+          <button class="theme-toggle-btn" onclick="toggleThemeBar()">🎨 Theme <span class="th-arrow">▾</span></button>
+          <div class="theme-dots">
+            <button class="th-dot on" data-t="bold" onclick="setTheme('bold')" title="Bold"></button>
+            <button class="th-dot" data-t="sleek" onclick="setTheme('sleek')" title="Sleek"></button>
+            <button class="th-dot" data-t="warm" onclick="setTheme('warm')" title="Warm"></button>
+            <button class="th-dot" data-t="clean" onclick="setTheme('clean')" title="Clean"></button>
+          </div>
+        </div>
         <button class="a-btn" onclick="doExport()">⬇ Export CSV</button>
         <button class="a-btn" onclick="exitAdmin()">← Exit</button>
       </div>
@@ -924,11 +933,13 @@ var DEF_COACHES = [
   {id:'c1',name:'Orlando C.',initials:'OC',spec:'Setter & Attack',days:[1,2,3,4,5,6],hrStart:8,hrEnd:19,
    bio:'10+ years coaching competitive volleyball at club and high school level. Specializes in setting technique, offensive systems, and mental game training.',
    phone:'(559) 555-0101',email:'orlando@vbtrainer.com',instagram:'@orlandovolley',
-   badges:['ncaa-d1-athlete','years-10','position','recruiting']},
+   badges:['ncaa-d1-athlete','years-10','position','recruiting','indoor','beach'],
+   customPrices:{}},
   {id:'c2',name:'Coach Maya',initials:'CM',spec:'Defense & Libero',days:[1,2,3,5,6],hrStart:9,hrEnd:17,
    bio:'Elite libero trainer with 8 years experience developing defensive specialists. Known for floor defense, passing accuracy, and footwork drills.',
    phone:'(559) 555-0202',email:'maya@vbtrainer.com',instagram:'@coachmayadef',
-   badges:['ncaa-d2-athlete','years-5','position','top-booked']}
+   badges:['ncaa-d2-athlete','years-5','position','top-booked','indoor'],
+   customPrices:{}}
 ];
 
 function getPrices(){return lsGet('vt_prices2',DEF_PRICES);}
@@ -943,7 +954,7 @@ function removeBookingRec(id){lsSet('vt_bookings',getBookings().filter(function(
 /* ────────────────────────────
    BOOKING STATE
 ──────────────────────────── */
-var B={svc:'',svcId:'',svcLabel:'',svcPrice:0,isPkg:false,pkgId:'',pkgLabel:'',pkgSessionCount:0,pkgSessions:[],coach:null,dur:60,date:null,time:'',fi:'',la:'',em:'',ph:'',pos:'',lv:'',notes:''};
+var B={svc:'',svcId:'',svcLabel:'',svcPrice:0,isPkg:false,pkgId:'',pkgLabel:'',pkgSessionCount:0,pkgSessions:[],coach:null,surface:'Indoor',dur:60,date:null,time:'',fi:'',la:'',em:'',ph:'',pos:'',lv:'',notes:''};
 var calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 var simTaken={};
 var wlTargetSlot={date:'',time:'',coach:''};
@@ -1032,27 +1043,6 @@ function buildSvcGrid(){
   renderPriceTables();
 }
 
-function renderPriceTables(){
-  var prices=getPrices();
-  var durs=[30,60,90,120];
-  prices.forEach(function(p){
-    if(p.hidden)return;
-    var pp=p.prices||{};
-    var html='';
-    durs.forEach(function(d){
-      var price=pp[d];
-      var label=d===120?'2hr':d+'m';
-      var isActive=(d===B.dur);
-      html+='<div class="svc-dur-cell'+(isActive?' active-dur':'')+'">'
-        +'<div class="svc-dur-label">'+label+'</div>'
-        +'<div class="svc-dur-price">'+(price!=null?'$'+price:'—')+'</div>'
-        +'</div>';
-    });
-    var el=document.getElementById('spt_'+p.id);
-    if(el)el.innerHTML=html;
-  });
-}
-
 function pickSvc(id){
   var prices=getPrices();
   var p=null;prices.forEach(function(x){if(x.id===id)p=x;});
@@ -1065,22 +1055,56 @@ function pickSvc(id){
   updateDurHint();
 }
 
+function getEffectivePrice(svcId,dur){
+  // Check coach custom price first, fall back to base price
+  var basePrice=null;
+  var prices=getPrices();
+  prices.forEach(function(p){if(p.id===svcId){var pp=p.prices||{};if(pp[dur]!=null)basePrice=pp[dur];}});
+  if(B.coach&&B.coach.customPrices){
+    var key=svcId+'_'+dur;
+    var override=B.coach.customPrices[key];
+    if(override!=null&&override!=='')return{price:Number(override),isOverride:true};
+  }
+  return{price:basePrice,isOverride:false};
+}
+
 function updateDurHint(){
   renderPriceTables();
   var hint=document.getElementById('durHint');
   if(!B.svcId){hint.innerHTML='<span style="color:var(--muted);font-size:12px;">← Select a service above to see pricing</span>';return;}
-  var prices=getPrices();
-  var p=null;prices.forEach(function(x){if(x.id===B.svcId)p=x;});
+  var result=getEffectivePrice(B.svcId,B.dur);
+  var prices=getPrices();var p=null;prices.forEach(function(x){if(x.id===B.svcId)p=x;});
   if(!p){hint.textContent='';return;}
-  var pp=p.prices||{};
-  var price=pp[B.dur];
-  if(price!=null){
-    B.svcPrice=price;
-    B.svcLabel='$'+price+' — '+p.note;
-    hint.innerHTML='<span style="color:var(--acc);font-weight:800;font-size:15px;">$'+price+'</span><span style="color:var(--muted);font-size:13px;"> for '+B.dur+' min · '+esc(p.note)+'</span>';
+  if(result.price!=null){
+    B.svcPrice=result.price;
+    B.svcLabel='$'+result.price+' — '+p.note;
+    hint.innerHTML='<span style="color:var(--acc);font-weight:800;font-size:15px;">$'+result.price+'</span>'
+      +'<span style="color:var(--muted);font-size:13px;"> for '+B.dur+' min · '+esc(p.note)+'</span>'
+      +(result.isOverride?'<span style="margin-left:8px;font-size:10px;font-weight:800;color:var(--acc2);text-transform:uppercase;letter-spacing:.06em;">'+B.coach.name+'\'s rate</span>':'');
   } else {
     hint.innerHTML='<span style="color:var(--muted);font-size:12px;">No price set for '+B.dur+' min — add it in Admin → Prices</span>';
   }
+}
+
+function renderPriceTables(){
+  var prices=getPrices();
+  var durs=[30,60,90,120];
+  prices.forEach(function(p){
+    if(p.hidden)return;
+    var html='';
+    durs.forEach(function(d){
+      var result=getEffectivePrice(p.id,d);
+      var price=result.price;
+      var label=d===120?'2hr':d+'m';
+      var isActive=(d===B.dur);
+      html+='<div class="svc-dur-cell'+(isActive?' active-dur':'')+'">'
+        +'<div class="svc-dur-label">'+label+(result.isOverride?'<span style="color:var(--acc2);font-size:8px;margin-left:2px;">★</span>':'')+'</div>'
+        +'<div class="svc-dur-price">'+(price!=null?'$'+price:'—')+'</div>'
+        +'</div>';
+    });
+    var el=document.getElementById('spt_'+p.id);
+    if(el)el.innerHTML=html;
+  });
 }
 
 /* ────────────────────────────
@@ -1225,7 +1249,10 @@ var BADGE_CATALOG = [
   {id:'years-20',        label:'🕒 20+ Yrs Coaching',cls:'cb-years-20'},
   {id:'elite',           label:'💎 Elite Trainer',   cls:'cb-elite'},
   {id:'high-perf',       label:'🏆 High Performance',cls:'cb-high-perf'},
-  {id:'advanced',        label:'🚀 Advanced Dev',    cls:'cb-advanced'}
+  {id:'advanced',        label:'🚀 Advanced Dev',    cls:'cb-advanced'},
+  {id:'indoor',          label:'🏟 Indoor',           cls:'cb-indoor'},
+  {id:'beach',           label:'🏖 Beach',            cls:'cb-beach'},
+  {id:'grass',           label:'🌿 Grass',            cls:'cb-grass'}
 ];
 
 function getBadgeById(id){var b=null;BADGE_CATALOG.forEach(function(x){if(x.id===id)b=x;});return b;}
@@ -1542,8 +1569,9 @@ function changeMonth(dir){
    NAVIGATION
 ──────────────────────────── */
 function goTo(n){
-  if(n===2&&!B.svc&&!B.isPkg){showToast('Please choose a session type or package!');return;}
-  if(n===3&&!B.coach){showToast('Please select a coach!');return;}
+  // NEW ORDER: 1=Coach, 2=Service, 3=Schedule, 4=Details, 5=Confirm
+  if(n===2&&!B.coach){showToast('Please select a coach first!');return;}
+  if(n===3&&!B.svc&&!B.isPkg){showToast('Please choose a session type or package!');return;}
   if(n===4&&!B.isPkg&&!B.date){showToast('Please pick a date!');return;}
   if(n===4&&!B.isPkg&&!B.time){showToast('Please pick a time slot!');return;}
   if(n===4&&B.isPkg){
@@ -1552,9 +1580,15 @@ function goTo(n){
   }
   if(n===5&&!validateForm())return;
 
-  if(n===2){buildCoachGrid();}
+  // Step 2: rebuild service grid with coach-aware pricing then show packages
+  if(n===2){
+    buildSvcGrid();
+    buildPkgGrid();
+    var svcSub=document.getElementById('svcSubLbl');
+    if(svcSub)svcSub.textContent=B.coach?(B.coach.name+'\'s rates — select service type below.'):'Select the type of coaching you need.';
+  }
 
-  // Package flow: step 3 → package session scheduler
+  // Step 3: package vs single routing
   if(n===3&&B.isPkg){
     updateCalSub();
     initPkgSessions();
@@ -1564,18 +1598,19 @@ function goTo(n){
     window.scrollTo({top:0,behavior:'smooth'});
     return;
   }
-
   if(n===3&&!B.isPkg){updateCalSub();}
 
+  // Step 4 summary bar
   if(n===4){
+    var surfTag=' · '+B.surface;
     if(B.isPkg){
       var sch=B.pkgSessions.filter(function(s){return s.date&&s.time;});
-      setText('sb-svc',B.svc+' (Package)');
+      setText('sb-svc',B.svc+' (Package)'+surfTag);
       setText('sb-coach',B.coach?B.coach.name:'—');
       setText('sb-date',sch.length+' session'+(sch.length!==1?'s':'')+' scheduled');
       setText('sb-time',sch[0]?sch[0].time+' · '+fmtDate(sch[0].date):'—');
     } else {
-      setText('sb-svc',B.svc);
+      setText('sb-svc',B.svc+surfTag);
       setText('sb-coach',B.coach?B.coach.name:'—');
       setText('sb-date',fmtDate(B.date));
       setText('sb-time',B.time);
@@ -1587,6 +1622,12 @@ function goTo(n){
   var sc=document.getElementById('sc'+n);if(sc)sc.classList.add('active');
   updateSteps(n);
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pickSurface(el,surface){
+  document.querySelectorAll('#surfacePills .pill').forEach(function(p){p.classList.remove('active');});
+  el.classList.add('active');
+  B.surface=surface;
 }
 
 function updateSteps(n){
@@ -1618,8 +1659,9 @@ function buildConfirm(){
   var html='';
   html+=ci('Name',B.fi+' '+B.la);html+=ci('Email',B.em);html+=ci('Phone',B.ph);
   html+=ci('Position',B.pos||'Not specified');
-  html+=ci('Service',B.svc+(B.isPkg?' (Package)':''));
   html+=ci('Coach',B.coach?B.coach.name:'—');
+  html+=ci('Service',B.svc+(B.isPkg?' (Package)':''));
+  html+=ci('Surface',B.surface||'Indoor');
   if(B.isPkg){
     var sch=B.pkgSessions.filter(function(s){return s.date&&s.time;});
     html+='<div class="conf-item full"><div class="conf-lbl">Scheduled Sessions ('+sch.length+')</div><div class="conf-val" style="font-weight:400;font-size:13px;line-height:1.8;">';
@@ -2266,6 +2308,28 @@ function buildCoachManager(){
           +'<div class="cm-field"><div class="cm-lbl">Start Time</div><select class="cm-inp" id="cmhs_'+c.id+'">'+hourOpts+'</select></div>'
           +'<div class="cm-field"><div class="cm-lbl">End Time</div><select class="cm-inp" id="cmhe_'+c.id+'">'+hourOpts+'</select></div>'
         +'</div>'
+        +'<div class="cm-field full" style="margin-top:14px;">'
+          +'<div class="cm-lbl" style="margin-bottom:10px;">💰 Custom Pricing Overrides <span style="font-weight:400;color:var(--muted);">(leave blank to use base prices)</span></div>'
+          +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px;">'
+            +'<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-align:center;">30 min</div>'
+            +'<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-align:center;">60 min</div>'
+            +'<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-align:center;">90 min</div>'
+            +'<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-align:center;">2 hrs</div>'
+          +'</div>'
+          +getPrices().filter(function(p){return!p.hidden;}).map(function(p){
+            var cp=c.customPrices||{};
+            return '<div style="margin-bottom:8px;">'
+              +'<div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">'+esc(p.emoji)+' '+esc(p.name)+'</div>'
+              +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">'
+              +[30,60,90,120].map(function(d){
+                var key=p.id+'_'+d;
+                var val=cp[key]!=null?cp[key]:'';
+                return'<div class="pe-price-row" style="border-radius:8px;"><span class="pe-sym" style="font-size:12px;">$</span><input type="number" id="cmprice_'+c.id+'_'+key+'" value="'+val+'" min="0" placeholder="—" style="padding:7px 4px 7px 0;font-size:12px;"></div>';
+              }).join('')
+              +'</div>'
+            +'</div>';
+          }).join('')
+        +'</div>'
         +'<div class="cm-foot"><button class="btn-primary cm-save" onclick="saveCoach(\''+c.id+'\')">💾 Save</button><button class="cm-del-btn" onclick="deleteCoach(\''+c.id+'\')">🗑 Remove</button></div>'
       +'</div>'
     +'</div>';
@@ -2303,6 +2367,16 @@ function saveCoach(id){
   if(emailEl)c.email=emailEl.value;if(igEl)c.instagram=igEl.value;
   // badges are saved live on toggle, just ensure array exists
   if(!c.badges)c.badges=[];
+  // Save custom price overrides
+  var cp={};
+  getPrices().forEach(function(p){
+    [30,60,90,120].forEach(function(d){
+      var key=p.id+'_'+d;
+      var el=document.getElementById('cmprice_'+id+'_'+key);
+      if(el&&el.value!=='')cp[key]=Number(el.value);
+    });
+  });
+  c.customPrices=cp;
   if(daysEl){var pills=daysEl.querySelectorAll('.day-pill');c.days=[];pills.forEach(function(p,i){if(p.classList.contains('on'))c.days.push(i);});}
   lsSet('vt_coaches',coaches);buildCoachManager();buildBlockCoachSelect();showToast('✅ Coach saved!');
 }
@@ -2347,9 +2421,9 @@ function showToast(msg){var t=document.getElementById('toast');t.textContent=msg
   // Clear old package data so renamed defaults + badge fields load fresh
   if(!lsGet('vt_pkg_v4',false)){localStorage.removeItem('vt_packages');lsSet('vt_pkg_v4',true);}
   // Clear old coach data so badge fields load fresh
-  if(!lsGet('vt_coach_v3',false)){localStorage.removeItem('vt_coaches');lsSet('vt_coach_v3',true);}
+  if(!lsGet('vt_coach_v4',false)){localStorage.removeItem('vt_coaches');lsSet('vt_coach_v4',true);}
   var t=lsGet('vt_theme','bold');setTheme(t);
-  buildSvcGrid();buildPkgGrid();renderCal();
+  buildCoachGrid();buildSvcGrid();buildPkgGrid();renderCal();
   if(EJS_READY)document.getElementById('ejsNotice').style.display='none';
   checkReminder();
 })();
