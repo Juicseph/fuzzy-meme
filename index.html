@@ -912,16 +912,17 @@ textarea.form-input{resize:vertical;min-height:80px;}
   </div>
 </div><!-- /adminWrap -->
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 /* ────────────────────────────
    CONFIG
 ──────────────────────────── */
-var ADMIN_PW = 'trainer2024';
+var ADMIN_PW = '1234';
 var EJS_READY = true;
 var EJS_KEY = 'Yzj7bcqr-Ovw0WIO4';
 var EJS_SVC_ID = 'service_mzj10ul';
-var EJS_T = 'trainer_notify';
-var EJS_C = 'client_confirm';
+var EJS_T = 'template_drd9z2n';
+var EJS_C = 'template_naxgdts';
 var TRAINER = 'orlando.catalan23@gmail.com';
 
 // ── TWILIO SMS (optional) ──────────────────────────
@@ -2606,8 +2607,35 @@ function showToast(msg){var t=document.getElementById('toast');t.textContent=msg
   if(!lsGet('vt_coach_v4',false)){localStorage.removeItem('vt_coaches');lsSet('vt_coach_v4',true);}
   var t=lsGet('vt_theme','bold');setTheme(t);
   buildCoachGrid();buildSvcGrid();buildPkgGrid();renderCal();
-  if(EJS_READY)document.getElementById('ejsNotice').style.display='none';
   checkReminder();
+
+  // ── Load EmailJS and init ──
+  function initEJS(){
+    if(EJS_READY&&typeof emailjs!=='undefined'){
+      emailjs.init(EJS_KEY);
+      document.getElementById('ejsNotice').style.display='none';
+      console.log('EmailJS initialized OK');
+    }
+  }
+
+  if(typeof emailjs!=='undefined'){
+    // Already loaded from <script src>
+    initEJS();
+  } else {
+    // Try loading dynamically as fallback
+    var s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+    s.onload=function(){console.log('EmailJS loaded dynamically');initEJS();};
+    s.onerror=function(){
+      // Try unpkg as second fallback
+      var s2=document.createElement('script');
+      s2.src='https://unpkg.com/@emailjs/browser@4/dist/email.min.js';
+      s2.onload=function(){console.log('EmailJS loaded from unpkg');initEJS();};
+      s2.onerror=function(){console.error('EmailJS failed to load from all sources.');};
+      document.head.appendChild(s2);
+    };
+    document.head.appendChild(s);
+  }
 })();
 </script>
 </body>
