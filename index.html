@@ -42,14 +42,20 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .theme-toggle-btn .th-arrow{font-size:10px;transition:transform .3s;display:inline-block;}
 .theme-bar.open .theme-toggle-btn .th-arrow{transform:rotate(180deg);}
 .theme-dots{display:flex;align-items:center;gap:6px;padding:0 10px 0 0;max-width:0;overflow:hidden;opacity:0;transition:max-width .35s cubic-bezier(.22,1,.36,1), opacity .25s, padding .3s;}
-.theme-bar.open .theme-dots{max-width:160px;opacity:1;padding:0 10px 0 0;}
+.theme-bar.open .theme-dots{max-width:320px;opacity:1;padding:0 10px 0 0;}
 .th-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;outline:none;flex-shrink:0;}
 .th-dot:hover{transform:scale(1.18);}
 .th-dot.on{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.2);}
-.th-dot[data-t="bold"]{background:linear-gradient(135deg,#CCFF00,#FF5C00);}
-.th-dot[data-t="sleek"]{background:linear-gradient(135deg,#111,#E8C97A);}
-.th-dot[data-t="warm"]{background:linear-gradient(135deg,#F5A623,#E8673A);}
-.th-dot[data-t="clean"]{background:linear-gradient(135deg,#38BDF8,#6366F1);}
+.th-dot[data-t="bold"]    {background:linear-gradient(135deg,#CCFF00,#FF5C00);}
+.th-dot[data-t="sleek"]   {background:linear-gradient(135deg,#111,#E8C97A);}
+.th-dot[data-t="warm"]    {background:linear-gradient(135deg,#F5A623,#E8673A);}
+.th-dot[data-t="clean"]   {background:linear-gradient(135deg,#38BDF8,#6366F1);}
+.th-dot[data-t="midnight"] {background:linear-gradient(135deg,#000,#fff);}
+.th-dot[data-t="white"]   {background:linear-gradient(135deg,#fff,#e5e5e5);border-color:rgba(0,0,0,.15)!important;}
+.th-dot[data-t="apple"]   {background:linear-gradient(135deg,#1d1d1f,#0071e3);}
+.th-dot[data-t="windows"] {background:linear-gradient(135deg,#0078d4,#00b4ff);}
+.th-dot[data-t="nintendo"]{background:linear-gradient(135deg,#E60012,#009AC7);}
+.th-dot[data-t="forest"]  {background:linear-gradient(135deg,#1a3a1a,#4caf50);}
 
 /* HEADER */
 header{text-align:center;padding:70px 20px 36px;position:relative;z-index:1;}
@@ -788,10 +794,16 @@ textarea.form-input{resize:vertical;min-height:80px;}
         <div class="theme-bar" id="themeBar">
           <button class="theme-toggle-btn" onclick="toggleThemeBar()">🎨 Theme <span class="th-arrow">▾</span></button>
           <div class="theme-dots">
-            <button class="th-dot on" data-t="bold" onclick="setTheme('bold')" title="Bold"></button>
-            <button class="th-dot" data-t="sleek" onclick="setTheme('sleek')" title="Sleek"></button>
-            <button class="th-dot" data-t="warm" onclick="setTheme('warm')" title="Warm"></button>
-            <button class="th-dot" data-t="clean" onclick="setTheme('clean')" title="Clean"></button>
+            <button class="th-dot on" data-t="bold"     onclick="setTheme('bold')"     title="Bold"></button>
+            <button class="th-dot" data-t="sleek"    onclick="setTheme('sleek')"    title="Sleek"></button>
+            <button class="th-dot" data-t="warm"     onclick="setTheme('warm')"     title="Warm"></button>
+            <button class="th-dot" data-t="clean"    onclick="setTheme('clean')"    title="Clean"></button>
+            <button class="th-dot" data-t="midnight" onclick="setTheme('midnight')" title="Midnight"></button>
+            <button class="th-dot" data-t="white"    onclick="setTheme('white')"    title="White"></button>
+            <button class="th-dot" data-t="apple"    onclick="setTheme('apple')"    title="Apple"></button>
+            <button class="th-dot" data-t="windows"  onclick="setTheme('windows')"  title="Windows"></button>
+            <button class="th-dot" data-t="nintendo" onclick="setTheme('nintendo')" title="Nintendo"></button>
+            <button class="th-dot" data-t="forest"   onclick="setTheme('forest')"   title="Forest"></button>
           </div>
         </div>
         <button class="a-btn" onclick="doExport()">⬇ Export CSV</button>
@@ -920,7 +932,7 @@ textarea.form-input{resize:vertical;min-height:80px;}
 var ADMIN_PW = 'trainer2024';
 var EJS_READY = true;
 var EJS_KEY = 'hp5Kk2ZDOdzXN_pWm';
-var EJS_SVC_ID = 'service_4c0ju5m';
+var EJS_SVC_ID = 'service_mzj10ul';
 var EJS_T = 'template_drd9z2n';
 var EJS_C = 'template_naxgdts';
 var TRAINER = 'orlando.catalan23@gmail.com';
@@ -989,10 +1001,29 @@ var wlTargetSlot={date:'',time:'',coach:''};
    THEMES
 ──────────────────────────── */
 var THEMES={
-  bold:{'--bg':'#080C1E','--bg2':'#0F142E','--surf':'rgba(255,255,255,0.05)','--surf2':'rgba(255,255,255,0.08)','--bdr':'rgba(255,255,255,0.1)','--txt':'#F4F4EF','--muted':'rgba(244,244,239,0.5)','--acc':'#CCFF00','--acc2':'#FF5C00','--on-acc':'#080C1E','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(255,255,255,0.1)','--sel-bg':'rgba(204,255,0,0.08)','--tag-bg':'rgba(204,255,0,0.15)','--tag-c':'#CCFF00','--sum-bg':'rgba(204,255,0,0.06)','--sum-b':'rgba(204,255,0,0.2)'},
-  sleek:{'--bg':'#0A0A0A','--bg2':'#141414','--surf':'rgba(255,255,255,0.03)','--surf2':'rgba(255,255,255,0.06)','--bdr':'rgba(255,255,255,0.08)','--txt':'#EFEFEF','--muted':'rgba(239,239,239,0.4)','--acc':'#E8C97A','--acc2':'#C4A25A','--on-acc':'#0A0A0A','--inp':'rgba(255,255,255,0.04)','--inp-b':'rgba(255,255,255,0.08)','--sel-bg':'rgba(232,201,122,0.08)','--tag-bg':'rgba(232,201,122,0.15)','--tag-c':'#E8C97A','--sum-bg':'rgba(232,201,122,0.06)','--sum-b':'rgba(232,201,122,0.2)'},
-  warm:{'--bg':'#1C1410','--bg2':'#231A13','--surf':'rgba(255,220,170,0.05)','--surf2':'rgba(255,220,170,0.09)','--bdr':'rgba(255,200,130,0.12)','--txt':'#F5ECD7','--muted':'rgba(245,236,215,0.45)','--acc':'#F5A623','--acc2':'#E8673A','--on-acc':'#1C1410','--inp':'rgba(255,220,170,0.06)','--inp-b':'rgba(255,200,130,0.12)','--sel-bg':'rgba(245,166,35,0.1)','--tag-bg':'rgba(245,166,35,0.15)','--tag-c':'#F5A623','--sum-bg':'rgba(245,166,35,0.07)','--sum-b':'rgba(245,166,35,0.2)'},
-  clean:{'--bg':'#1A1F2E','--bg2':'#222840','--surf':'rgba(255,255,255,0.05)','--surf2':'rgba(255,255,255,0.09)','--bdr':'rgba(255,255,255,0.1)','--txt':'#E8EDF5','--muted':'rgba(232,237,245,0.5)','--acc':'#38BDF8','--acc2':'#0EA5E9','--on-acc':'#0F172A','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(255,255,255,0.12)','--sel-bg':'rgba(56,189,248,0.1)','--tag-bg':'rgba(56,189,248,0.15)','--tag-c':'#38BDF8','--sum-bg':'rgba(56,189,248,0.07)','--sum-b':'rgba(56,189,248,0.2)'}
+  // ── ORIGINAL 4 ──
+  bold:    {'--bg':'#080C1E','--bg2':'#0F142E','--surf':'rgba(255,255,255,0.05)','--surf2':'rgba(255,255,255,0.08)','--bdr':'rgba(255,255,255,0.1)','--txt':'#F4F4EF','--muted':'rgba(244,244,239,0.5)','--acc':'#CCFF00','--acc2':'#FF5C00','--on-acc':'#080C1E','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(255,255,255,0.1)','--sel-bg':'rgba(204,255,0,0.08)','--tag-bg':'rgba(204,255,0,0.15)','--tag-c':'#CCFF00','--sum-bg':'rgba(204,255,0,0.06)','--sum-b':'rgba(204,255,0,0.2)'},
+  sleek:   {'--bg':'#0A0A0A','--bg2':'#141414','--surf':'rgba(255,255,255,0.03)','--surf2':'rgba(255,255,255,0.06)','--bdr':'rgba(255,255,255,0.08)','--txt':'#EFEFEF','--muted':'rgba(239,239,239,0.4)','--acc':'#E8C97A','--acc2':'#C4A25A','--on-acc':'#0A0A0A','--inp':'rgba(255,255,255,0.04)','--inp-b':'rgba(255,255,255,0.08)','--sel-bg':'rgba(232,201,122,0.08)','--tag-bg':'rgba(232,201,122,0.15)','--tag-c':'#E8C97A','--sum-bg':'rgba(232,201,122,0.06)','--sum-b':'rgba(232,201,122,0.2)'},
+  warm:    {'--bg':'#1C1410','--bg2':'#231A13','--surf':'rgba(255,220,170,0.05)','--surf2':'rgba(255,220,170,0.09)','--bdr':'rgba(255,200,130,0.12)','--txt':'#F5ECD7','--muted':'rgba(245,236,215,0.45)','--acc':'#F5A623','--acc2':'#E8673A','--on-acc':'#1C1410','--inp':'rgba(255,220,170,0.06)','--inp-b':'rgba(255,200,130,0.12)','--sel-bg':'rgba(245,166,35,0.1)','--tag-bg':'rgba(245,166,35,0.15)','--tag-c':'#F5A623','--sum-bg':'rgba(245,166,35,0.07)','--sum-b':'rgba(245,166,35,0.2)'},
+  clean:   {'--bg':'#1A1F2E','--bg2':'#222840','--surf':'rgba(255,255,255,0.05)','--surf2':'rgba(255,255,255,0.09)','--bdr':'rgba(255,255,255,0.1)','--txt':'#E8EDF5','--muted':'rgba(232,237,245,0.5)','--acc':'#38BDF8','--acc2':'#0EA5E9','--on-acc':'#0F172A','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(255,255,255,0.12)','--sel-bg':'rgba(56,189,248,0.1)','--tag-bg':'rgba(56,189,248,0.15)','--tag-c':'#38BDF8','--sum-bg':'rgba(56,189,248,0.07)','--sum-b':'rgba(56,189,248,0.2)'},
+
+  // ── BLACK & WHITE ── pure contrast, white text on black
+  midnight:{'--bg':'#000000','--bg2':'#0a0a0a','--surf':'rgba(255,255,255,0.04)','--surf2':'rgba(255,255,255,0.07)','--bdr':'rgba(255,255,255,0.12)','--txt':'#FFFFFF','--muted':'rgba(255,255,255,0.45)','--acc':'#FFFFFF','--acc2':'#888888','--on-acc':'#000000','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(255,255,255,0.12)','--sel-bg':'rgba(255,255,255,0.08)','--tag-bg':'rgba(255,255,255,0.12)','--tag-c':'#FFFFFF','--sum-bg':'rgba(255,255,255,0.05)','--sum-b':'rgba(255,255,255,0.18)'},
+
+  // ── WHITE & BLACK ── pure white bg, black text
+  white:   {'--bg':'#FFFFFF','--bg2':'#F2F2F2','--surf':'rgba(0,0,0,0.04)','--surf2':'rgba(0,0,0,0.07)','--bdr':'rgba(0,0,0,0.1)','--txt':'#111111','--muted':'rgba(17,17,17,0.45)','--acc':'#111111','--acc2':'#555555','--on-acc':'#FFFFFF','--inp':'rgba(0,0,0,0.05)','--inp-b':'rgba(0,0,0,0.12)','--sel-bg':'rgba(0,0,0,0.05)','--tag-bg':'rgba(0,0,0,0.08)','--tag-c':'#111111','--sum-bg':'rgba(0,0,0,0.04)','--sum-b':'rgba(0,0,0,0.15)'},
+
+  // ── APPLE ── dark like macOS with SF-style blue
+  apple:   {'--bg':'#1C1C1E','--bg2':'#2C2C2E','--surf':'rgba(255,255,255,0.05)','--surf2':'rgba(255,255,255,0.08)','--bdr':'rgba(255,255,255,0.1)','--txt':'#F5F5F7','--muted':'rgba(245,245,247,0.45)','--acc':'#0071E3','--acc2':'#30D158','--on-acc':'#FFFFFF','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(255,255,255,0.1)','--sel-bg':'rgba(0,113,227,0.12)','--tag-bg':'rgba(0,113,227,0.15)','--tag-c':'#409CFF','--sum-bg':'rgba(0,113,227,0.07)','--sum-b':'rgba(0,113,227,0.22)'},
+
+  // ── WINDOWS 11 ── fluent design, acrylic blues
+  windows: {'--bg':'#0C2340','--bg2':'#0F2D52','--surf':'rgba(255,255,255,0.06)','--surf2':'rgba(255,255,255,0.1)','--bdr':'rgba(255,255,255,0.12)','--txt':'#FFFFFF','--muted':'rgba(255,255,255,0.5)','--acc':'#0078D4','--acc2':'#00B4FF','--on-acc':'#FFFFFF','--inp':'rgba(255,255,255,0.07)','--inp-b':'rgba(255,255,255,0.14)','--sel-bg':'rgba(0,120,212,0.15)','--tag-bg':'rgba(0,180,255,0.15)','--tag-c':'#00B4FF','--sum-bg':'rgba(0,120,212,0.1)','--sum-b':'rgba(0,120,212,0.3)'},
+
+  // ── NINTENDO ── red & white, bold like Switch UI
+  nintendo:{'--bg':'#1A0A0A','--bg2':'#2A1010','--surf':'rgba(255,255,255,0.05)','--surf2':'rgba(255,255,255,0.08)','--bdr':'rgba(255,255,255,0.1)','--txt':'#FFFFFF','--muted':'rgba(255,255,255,0.45)','--acc':'#E60012','--acc2':'#009AC7','--on-acc':'#FFFFFF','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(255,255,255,0.1)','--sel-bg':'rgba(230,0,18,0.12)','--tag-bg':'rgba(230,0,18,0.18)','--tag-c':'#FF4455','--sum-bg':'rgba(230,0,18,0.08)','--sum-b':'rgba(230,0,18,0.25)'},
+
+  // ── FOREST ── deep green, earthy & natural
+  forest:  {'--bg':'#0D1F0D','--bg2':'#162816','--surf':'rgba(255,255,255,0.05)','--surf2':'rgba(255,255,255,0.08)','--bdr':'rgba(100,200,100,0.15)','--txt':'#E8F5E9','--muted':'rgba(232,245,233,0.45)','--acc':'#4CAF50','--acc2':'#8BC34A','--on-acc':'#0D1F0D','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(100,200,100,0.15)','--sel-bg':'rgba(76,175,80,0.1)','--tag-bg':'rgba(76,175,80,0.18)','--tag-c':'#69F070','--sum-bg':'rgba(76,175,80,0.07)','--sum-b':'rgba(76,175,80,0.25)'}
 };
 function setTheme(t){
   var vars=THEMES[t];if(!vars)return;
