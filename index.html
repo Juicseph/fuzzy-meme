@@ -933,7 +933,7 @@ textarea.form-input{resize:vertical;min-height:80px;}
 var ADMIN_PW = 'trainer2024';
 var EJS_READY = true;
 var EJS_KEY = 'hp5Kk2ZDOdzXN_pWm';
-var EJS_SVC_ID = 'service_4c0ju5m';
+var EJS_SVC_ID = 'service_mzj10ul';
 var EJS_T = 'template_drd9z2n';
 var EJS_C = 'template_naxgdts';
 var TRAINER = 'orlando.catalan23@gmail.com';
@@ -1073,7 +1073,7 @@ function syncFromSheets(cb){
             pos:        String(row['Position']||''),
             lv:         String(row['Level']||''),
             svcLabel:   String(row['Price']||''),
-            base:       0,
+            base:       parseInt(String(row['Price']||'').replace(/[^0-9]/g,''))||0,
             notes:      String(row['Notes']||'')
           };
         });
@@ -2141,18 +2141,30 @@ function drawRevenue(){
   var pkgCount=all.filter(function(b){return b.isPkg;}).length;
   setText('rTot','$'+total.toLocaleString());setText('rMon','$'+monRev.toLocaleString());setText('rPkg',pkgCount);
   // top service
-  var svcMap={};
-  all.forEach(function(b){svcMap[b.svc]=(svcMap[b.svc]||0)+(b.base||0);});
+  var svcMap={};var svcCount={};
+  all.forEach(function(b){
+    var s=b.svc||'Unknown';
+    svcMap[s]=(svcMap[s]||0)+(b.base||0);
+    svcCount[s]=(svcCount[s]||0)+1;
+  });
   var topSvc='—';var topVal=0;
   for(var s in svcMap){if(svcMap[s]>topVal){topVal=svcMap[s];topSvc=s;}}
-  setText('rTop',topSvc.split(' ')[0]);
+  // If all revenue is $0, fall back to most booked by count
+  if(topVal===0){
+    var topCount=0;
+    for(var s in svcCount){if(svcCount[s]>topCount){topCount=svcCount[s];topSvc=s;}}
+  }
+  setText('rTop',topSvc?topSvc.split(' ')[0]:'—');
   // by service
   var svcs=Object.keys(svcMap).sort(function(a,b){return svcMap[b]-svcMap[a];});
-  var maxSvc=svcs.length?svcMap[svcs[0]]:1;
+  var maxSvc=svcs.length?(svcMap[svcs[0]]||1):1;
   var svcHtml='';
   svcs.forEach(function(s){
-    var pct=Math.round((svcMap[s]/maxSvc)*100);
-    svcHtml+='<div class="rev-bar-row"><div class="rev-bar-label">'+esc(s.split(' ')[0]+' '+s.split(' ')[1])+'</div><div class="rev-bar-track"><div class="rev-bar-fill" style="width:'+pct+'%"></div></div><div class="rev-bar-val">$'+svcMap[s]+'</div></div>';
+    var rev=svcMap[s]||0;
+    var cnt=svcCount[s]||0;
+    var pct=maxSvc>0?Math.max(Math.round((rev/maxSvc)*100),8):8; // at least 8% so bar shows
+    var label=rev>0?'$'+rev:(cnt+' booking'+(cnt!==1?'s':''));
+    svcHtml+='<div class="rev-bar-row"><div class="rev-bar-label">'+esc(s.split(' ').slice(0,2).join(' '))+'</div><div class="rev-bar-track"><div class="rev-bar-fill" style="width:'+pct+'%"></div></div><div class="rev-bar-val">'+label+'</div></div>';
   });
   document.getElementById('revBySvc').innerHTML=svcHtml||'<div style="color:var(--muted);font-size:13px;">No data yet.</div>';
   // by coach
