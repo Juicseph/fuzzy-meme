@@ -829,6 +829,21 @@ textarea.form-input{resize:vertical;min-height:80px;}
           <div id="bookingRows"></div>
         </div>
         <div class="pag-bar"><div class="pag-info" id="pagInfo"></div><div class="pag-btns" id="pagBtns"></div></div>
+
+        <!-- EMAIL DEBUG PANEL -->
+        <div style="margin-top:28px;background:rgba(255,92,0,.06);border:1.5px solid rgba(255,92,0,.2);border-radius:16px;padding:22px;">
+          <div style="font-family:var(--fd);font-size:20px;letter-spacing:.04em;margin-bottom:4px;">📧 Email Debug</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:16px;">Send a test email right now to confirm your EmailJS setup is working.</div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+            <button onclick="debugSendTest()" style="padding:11px 20px;border-radius:10px;background:var(--acc);color:var(--on-acc);font-size:13px;font-weight:800;border:none;cursor:pointer;">
+              🧪 Send Test Email to Me
+            </button>
+            <button onclick="debugCheckConfig()" style="padding:11px 20px;border-radius:10px;background:var(--surface2);color:var(--txt);font-size:13px;font-weight:700;border:1px solid var(--bdr);cursor:pointer;">
+              🔍 Check Config
+            </button>
+          </div>
+          <div id="debugOutput" style="background:var(--bg2);border-radius:10px;padding:14px;font-size:12px;font-family:monospace;color:var(--txt);min-height:40px;line-height:1.7;white-space:pre-wrap;display:none;"></div>
+        </div>
       </div>
 
       <!-- REVENUE TAB -->
@@ -903,11 +918,21 @@ textarea.form-input{resize:vertical;min-height:80px;}
 ──────────────────────────── */
 var ADMIN_PW = 'trainer2024';
 var EJS_READY = true;
-var EJS_KEY = 'hp5Kk2ZDOdzXN_pWm';
-var EJS_SVC_ID = 'service_4c0ju5m';
+var EJS_KEY = 'Yzj7bcqr-Ovw0WIO4';
+var EJS_SVC_ID = 'service_mzj10ul';
 var EJS_T = 'trainer_notify';
 var EJS_C = 'client_confirm';
 var TRAINER = 'orlando.catalan23@gmail.com';
+
+// ── TWILIO SMS (optional) ──────────────────────────
+// Sign up free at twilio.com, get a trial number,
+// then fill these in and set SMS_READY = true
+var SMS_READY       = false;
+var TWILIO_ACCOUNT  = 'YOUR_ACCOUNT_SID';
+var TWILIO_TOKEN    = 'YOUR_AUTH_TOKEN';
+var TWILIO_FROM     = '+1XXXXXXXXXX';  // your Twilio number
+var TRAINER_PHONE   = '+1XXXXXXXXXX';  // your cell number
+// ──────────────────────────────────────────────────
 
 /* ────────────────────────────
    STORAGE
@@ -1731,6 +1756,32 @@ function submitBooking(){
       .then(function(){ console.log('Client email sent OK'); })
       .catch(function(err){ console.error('Client email FAILED:', JSON.stringify(err)); });
   }
+
+  // ── SMS via Twilio ──
+  if(SMS_READY){
+    var coachName=B.coach?B.coach.name:'your coach';
+    var sessionLine=B.isPkg
+      ?('Package: '+B.pkgSessions.filter(function(s){return s.date&&s.time;}).length+' sessions booked')
+      :(fmtDate(B.date)+' at '+B.time);
+
+    // Text to YOU (trainer)
+    var trainerMsg='🏐 NEW BOOKING\n'
+      +'Client: '+B.fi+' '+B.la+'\n'
+      +'Phone: '+B.ph+'\n'
+      +'Service: '+B.svc+'\n'
+      +'Surface: '+(B.surface||'Indoor')+'\n'
+      +''+sessionLine+'\n'
+      +'Price: '+B.svcLabel;
+    sendSMS(TRAINER_PHONE, trainerMsg);
+
+    // Text to CLIENT
+    var clientMsg='✅ Booking confirmed!\n'
+      +'Coach: '+coachName+'\n'
+      +'Service: '+B.svc+'\n'
+      +''+sessionLine+'\n'
+      +'Questions? Reply to this text.';
+    if(B.ph) sendSMS('+1'+B.ph.replace(/\D/g,''), clientMsg);
+  }
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   document.getElementById('sc6').classList.add('active');
   document.getElementById('stepBar').style.display='none';
@@ -2415,6 +2466,117 @@ function addCoach(){
   buildCoachManager();buildBlockCoachSelect();
   setTimeout(function(){toggleCM(nc.id);},80);
   showToast('New coach added.');
+}
+
+/* ────────────────────────────
+   EMAIL DEBUG
+──────────────────────────── */
+function debugLog(msg, color){
+  var el=document.getElementById('debugOutput');
+  if(!el)return;
+  el.style.display='block';
+  var stamp=new Date().toLocaleTimeString();
+  el.textContent+='['+stamp+'] '+msg+'\n';
+  el.scrollTop=el.scrollHeight;
+}
+
+function debugCheckConfig(){
+  var el=document.getElementById('debugOutput');
+  if(el){el.textContent='';el.style.display='block';}
+  debugLog('EJS_READY     = '+EJS_READY);
+  debugLog('EJS_KEY       = '+(EJS_KEY?EJS_KEY.slice(0,6)+'...('+EJS_KEY.length+' chars)':'MISSING'));
+  debugLog('EJS_SVC_ID    = '+EJS_SVC_ID);
+  debugLog('EJS_T         = '+EJS_T);
+  debugLog('EJS_C         = '+EJS_C);
+  debugLog('TRAINER email = '+TRAINER);
+  debugLog('emailjs lib   = '+(typeof emailjs!=='undefined'?'✅ loaded':'❌ NOT LOADED'));
+  if(typeof emailjs==='undefined'){
+    debugLog('→ EmailJS script failed to load. Check your internet connection.');
+  }
+}
+
+function debugSendTest(){
+  var el=document.getElementById('debugOutput');
+  if(el){el.textContent='';el.style.display='block';}
+  debugLog('Starting test email send...');
+
+  if(!EJS_READY){debugLog('❌ EJS_READY is false — emails disabled');return;}
+  if(typeof emailjs==='undefined'){debugLog('❌ EmailJS library not loaded');return;}
+
+  try{
+    emailjs.init(EJS_KEY);
+    debugLog('✅ emailjs.init() called with key: '+EJS_KEY.slice(0,8)+'...');
+  }catch(e){
+    debugLog('❌ emailjs.init() threw: '+e.message);return;
+  }
+
+  var testParams={
+    client_name:   'Test Athlete',
+    client_email:  TRAINER,
+    client_phone:  '(559) 000-0000',
+    coach:         'Orlando C.',
+    service:       '1-on-1 Private Training',
+    surface:       'Indoor',
+    date:          'Monday, Apr 28, 2026',
+    time:          '10:00 AM – 11:00 AM',
+    sessions:      '',
+    duration:      '60 min',
+    price:         '$75 + court fee',
+    position:      'Setter',
+    level:         'High School Varsity',
+    notes:         'Test booking — please ignore.',
+    trainer_email: TRAINER,
+    to_email:      TRAINER,
+    from_name:     'Volleyball Trainer Booking',
+    reply_to:      TRAINER
+  };
+
+  debugLog('Sending to template: '+EJS_T+' via service: '+EJS_SVC_ID);
+  debugLog('Sending to: '+TRAINER);
+
+  emailjs.send(EJS_SVC_ID, EJS_T, testParams)
+    .then(function(resp){
+      debugLog('✅ SUCCESS! Status: '+resp.status+' Text: '+resp.text);
+      debugLog('→ Check your inbox at '+TRAINER);
+      showToast('✅ Test email sent! Check your inbox.');
+    })
+    .catch(function(err){
+      debugLog('❌ FAILED: '+JSON.stringify(err));
+      debugLog('');
+      debugLog('Common fixes:');
+      if(err&&err.text&&err.text.indexOf('template')!==-1){
+        debugLog('→ Template "'+EJS_T+'" not found. Check template ID in EmailJS dashboard.');
+      } else if(err&&err.text&&err.text.indexOf('service')!==-1){
+        debugLog('→ Service "'+EJS_SVC_ID+'" not found. Check service ID in EmailJS dashboard.');
+      } else if(err&&err.text&&err.text.indexOf('key')!==-1){
+        debugLog('→ Invalid public key. Re-copy from EmailJS Account → API Keys.');
+      } else {
+        debugLog('→ Status '+err.status+': '+err.text);
+      }
+    });
+}
+
+/* ────────────────────────────
+   SMS via TWILIO
+──────────────────────────── */
+function sendSMS(to, body){
+  if(!SMS_READY)return;
+  var url='https://api.twilio.com/2010-04-01/Accounts/'+TWILIO_ACCOUNT+'/Messages.json';
+  var data=new URLSearchParams();
+  data.append('To', to);
+  data.append('From', TWILIO_FROM);
+  data.append('Body', body);
+  fetch(url,{
+    method:'POST',
+    headers:{
+      'Authorization':'Basic '+btoa(TWILIO_ACCOUNT+':'+TWILIO_TOKEN),
+      'Content-Type':'application/x-www-form-urlencoded'
+    },
+    body:data
+  })
+  .then(function(r){return r.json();})
+  .then(function(d){console.log('SMS sent:',d.sid||d);})
+  .catch(function(e){console.error('SMS failed:',e);});
 }
 
 /* ────────────────────────────
