@@ -933,7 +933,7 @@ textarea.form-input{resize:vertical;min-height:80px;}
 var ADMIN_PW = 'trainer2024';
 var EJS_READY = true;
 var EJS_KEY = 'hp5Kk2ZDOdzXN_pWm';
-var EJS_SVC_ID = 'service_4c0ju5m';
+var EJS_SVC_ID = 'service_mzj10ul';
 var EJS_T = 'template_drd9z2n';
 var EJS_C = 'template_naxgdts';
 var TRAINER = 'orlando.catalan23@gmail.com';
@@ -1049,11 +1049,9 @@ function syncFromSheets(cb){
             }
           }
 
-          // Normalize time — strip any unwanted suffixes
+          // Normalize time — strip seconds if Sheets adds them e.g. "3:00:00 PM" → "3:00 PM"
           var rawTime=String(row['Time']||'').trim();
-          // Sometimes Sheets adds ":00" seconds — clean to "H:MM AM"
-          var cleanTime=rawTime.replace(/:\d{2}(\s*[AP]M)/i,function(m,p1){return p1.trim();}).trim();
-          // If it got mangled to something odd, leave as-is
+          var cleanTime=rawTime.replace(/^(\d{1,2}:\d{2}):\d{2}(\s*[AP]M)?$/i,function(m,hm,ap){return hm+(ap?ap.trim():'');}).trim();
           if(!cleanTime)cleanTime=rawTime;
 
           return{
@@ -2736,9 +2734,21 @@ function setText(id,t){var el=document.getElementById(id);if(el)el.textContent=t
 function pad(n){return String(n).padStart(2,'0');}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function fmt24(h){var p=h>=12?'PM':'AM';var d=h>12?h-12:(h===0?12:h);return d+':00 '+p;}
-function to24(t){var parts=t.split(' ');var tm=parts[0];var p=parts[1];var hm=tm.split(':');var h=Number(hm[0]);if(p==='PM'&&h!==12)h+=12;if(p==='AM'&&h===12)h=0;return{h:h,m:0};}
-function addMins(hm,mins){var tot=hm.h*60+hm.m+mins;return{h:Math.floor(tot/60)%24,m:tot%60};}
-function endTime(ts,dur){if(!ts)return'';var e=addMins(to24(ts),dur);var p=e.h>=12?'PM':'AM';var h=e.h>12?e.h-12:(e.h===0?12:e.h);return h+':'+pad(e.m)+' '+p;}
+function to24(t){
+  if(!t)return{h:0,m:0};
+  var s=String(t).trim();
+  // Match formats: "3:00 PM", "3PM", "15:00", "3:00PM", "10:00 AM"
+  var match=s.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)?$/i);
+  if(!match)return{h:0,m:0};
+  var h=Number(match[1]);
+  var m=match[2]?Number(match[2]):0;
+  var period=(match[3]||'').toUpperCase();
+  if(period==='PM'&&h!==12)h+=12;
+  if(period==='AM'&&h===12)h=0;
+  return{h:h,m:m};
+}
+function addMins(hm,mins){var tot=hm.h*60+hm.m+Number(mins);return{h:Math.floor(tot/60)%24,m:tot%60};}
+function endTime(ts,dur){if(!ts||!dur||Number(dur)===0)return'';var e=addMins(to24(ts),Number(dur));var p=e.h>=12?'PM':'AM';var h=e.h>12?e.h-12:(e.h===0?12:e.h);return h+':'+pad(e.m)+' '+p;}
 function fmtDate(ds){if(!ds)return'—';var parts=ds.split('-').map(Number);var y=parts[0],m=parts[1],d=parts[2];var D=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];var dt=new Date(y,m-1,d);return D[dt.getDay()]+', '+M[m-1]+' '+d+', '+y;}
 function ci(lbl,v){return'<div class="conf-item"><div class="conf-lbl">'+lbl+'</div><div class="conf-val">'+esc(String(v||'—'))+'</div></div>';}
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);}
