@@ -526,7 +526,7 @@ textarea.form-input{resize:vertical;min-height:80px;}
 .session-picker{display:none;background:var(--bg2);border:1.5px solid var(--bdr);border-radius:12px;padding:14px;margin-top:10px;animation:fadeUp .2s ease;}
 .session-picker.open{display:block;}
 
-/* ── SOLD OUT ── */
+/* -- SOLD OUT -- */
 .sold-out-wrap{position:relative;display:contents;}
 .pkg-card.sold-out,.svc-card.sold-out{pointer-events:none;filter:saturate(0) brightness(0.55);}
 .sold-out-stamp{
@@ -541,11 +541,11 @@ textarea.form-input{resize:vertical;min-height:80px;}
 }
 .pkg-sold-container,.svc-sold-container{position:relative;display:block;}
 
-/* ── HIDDEN IN ADMIN ── */
+/* -- HIDDEN IN ADMIN -- */
 .pkg-hidden-dim{opacity:.38;filter:grayscale(0.5);}
 .hidden-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.06);border:1px dashed var(--bdr);border-radius:100px;padding:2px 9px;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.05em;}
 
-/* ── TOGGLE SWITCH ── */
+/* -- TOGGLE SWITCH -- */
 .tog-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
 .tog-switch input{opacity:0;width:0;height:0;position:absolute;}
 .tog-slider{position:absolute;inset:0;background:rgba(255,255,255,.12);border-radius:100px;cursor:pointer;transition:background .2s;}
@@ -927,18 +927,18 @@ textarea.form-input{resize:vertical;min-height:80px;}
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-/* ────────────────────────────
+/* ----------------------------
    CONFIG
-──────────────────────────── */
+---------------------------- */
 var ADMIN_PW = 'trainer2024';
 var EJS_READY = true;
 var EJS_KEY = 'hp5Kk2ZDOdzXN_pWm';
-var EJS_SVC_ID = 'service_4c0ju5m';
+var EJS_SVC_ID = 'service_mzj10ul';
 var EJS_T = 'template_drd9z2n';
 var EJS_C = 'template_naxgdts';
 var TRAINER = 'orlando.catalan23@gmail.com';
 
-// ── TWILIO SMS (optional) ──────────────────────────
+// -- TWILIO SMS (optional) --------------------------
 // Sign up free at twilio.com, get a trial number,
 // then fill these in and set SMS_READY = true
 var SMS_READY       = false;
@@ -946,17 +946,17 @@ var TWILIO_ACCOUNT  = 'YOUR_ACCOUNT_SID';
 var TWILIO_TOKEN    = 'YOUR_AUTH_TOKEN';
 var TWILIO_FROM     = '+1XXXXXXXXXX';  // your Twilio number
 var TRAINER_PHONE   = '+1XXXXXXXXXX';  // your cell number
-// ──────────────────────────────────────────────────
+// --------------------------------------------------
 
-/* ────────────────────────────
+/* ----------------------------
    STORAGE
-──────────────────────────── */
+---------------------------- */
 function lsGet(k,def){try{var v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 
-/* ────────────────────────────
+/* ----------------------------
    DEFAULTS
-──────────────────────────── */
+---------------------------- */
 var DEF_PRICES = [
   {id:'p1',name:'1-on-1 Private Training',emoji:'🏐',prices:{30:45,60:75,90:100,120:130},note:'+ court fee',hidden:false,spotsLeft:null,showSpots:false},
   {id:'p2',name:'Skills Assessment',emoji:'📋',prices:{30:25,60:35,90:50,120:65},note:'+ court fee',hidden:false,spotsLeft:null,showSpots:false},
@@ -988,11 +988,11 @@ function getBookings(){return lsGet('vt_bookings',[]);}
 function getWaitlist(){return lsGet('vt_waitlist',[]);}
 function getBlocks(){return lsGet('vt_blocks',[]);}
 
-// ── GOOGLE SHEETS BACKEND ──────────────────────────────────
+// -- GOOGLE SHEETS BACKEND ----------------------------------
 // Paste your Apps Script Web App URL below, then set SHEETS_READY=true
 var SHEETS_URL   = 'https://script.google.com/macros/s/AKfycbyXeW5rvV-AGuvDGVbmY-x7K7wmz5Bre3Z3tOJyIHp_F1WZ4lheFS5G49qZvWSDe79Q/exec';
 var SHEETS_READY = true;
-// ──────────────────────────────────────────────────────────
+// ----------------------------------------------------------
 
 function addBookingRec(b){
   // Save locally first (instant, works offline)
@@ -1093,40 +1093,40 @@ function syncFromSheets(cb){
     });
 }
 
-/* ────────────────────────────
+/* ----------------------------
    BOOKING STATE
-──────────────────────────── */
+---------------------------- */
 var B={svc:'',svcId:'',svcLabel:'',svcPrice:0,isPkg:false,pkgId:'',pkgLabel:'',pkgSessionCount:0,pkgSessions:[],coach:null,surface:'Indoor',dur:60,date:null,time:'',fi:'',la:'',em:'',ph:'',pos:'',lv:'',notes:''};
 var calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 var simTaken={};
 var wlTargetSlot={date:'',time:'',coach:''};
 
-/* ────────────────────────────
+/* ----------------------------
    THEMES
-──────────────────────────── */
+---------------------------- */
 var THEMES={
-  // ── ORIGINAL 4 ──
+  // -- ORIGINAL 4 --
   bold:    {'--bg':'#080C1E','--bg2':'#0F142E','--surf':'rgba(255,255,255,0.05)','--surf2':'rgba(255,255,255,0.08)','--bdr':'rgba(255,255,255,0.1)','--txt':'#F4F4EF','--muted':'rgba(244,244,239,0.5)','--acc':'#CCFF00','--acc2':'#FF5C00','--on-acc':'#080C1E','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(255,255,255,0.1)','--sel-bg':'rgba(204,255,0,0.08)','--tag-bg':'rgba(204,255,0,0.15)','--tag-c':'#CCFF00','--sum-bg':'rgba(204,255,0,0.06)','--sum-b':'rgba(204,255,0,0.2)'},
   sleek:   {'--bg':'#0A0A0A','--bg2':'#141414','--surf':'rgba(255,255,255,0.03)','--surf2':'rgba(255,255,255,0.06)','--bdr':'rgba(255,255,255,0.08)','--txt':'#EFEFEF','--muted':'rgba(239,239,239,0.4)','--acc':'#E8C97A','--acc2':'#C4A25A','--on-acc':'#0A0A0A','--inp':'rgba(255,255,255,0.04)','--inp-b':'rgba(255,255,255,0.08)','--sel-bg':'rgba(232,201,122,0.08)','--tag-bg':'rgba(232,201,122,0.15)','--tag-c':'#E8C97A','--sum-bg':'rgba(232,201,122,0.06)','--sum-b':'rgba(232,201,122,0.2)'},
   warm:    {'--bg':'#1C1410','--bg2':'#231A13','--surf':'rgba(255,220,170,0.05)','--surf2':'rgba(255,220,170,0.09)','--bdr':'rgba(255,200,130,0.12)','--txt':'#F5ECD7','--muted':'rgba(245,236,215,0.45)','--acc':'#F5A623','--acc2':'#E8673A','--on-acc':'#1C1410','--inp':'rgba(255,220,170,0.06)','--inp-b':'rgba(255,200,130,0.12)','--sel-bg':'rgba(245,166,35,0.1)','--tag-bg':'rgba(245,166,35,0.15)','--tag-c':'#F5A623','--sum-bg':'rgba(245,166,35,0.07)','--sum-b':'rgba(245,166,35,0.2)'},
   clean:   {'--bg':'#1A1F2E','--bg2':'#222840','--surf':'rgba(255,255,255,0.05)','--surf2':'rgba(255,255,255,0.09)','--bdr':'rgba(255,255,255,0.1)','--txt':'#E8EDF5','--muted':'rgba(232,237,245,0.5)','--acc':'#38BDF8','--acc2':'#0EA5E9','--on-acc':'#0F172A','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(255,255,255,0.12)','--sel-bg':'rgba(56,189,248,0.1)','--tag-bg':'rgba(56,189,248,0.15)','--tag-c':'#38BDF8','--sum-bg':'rgba(56,189,248,0.07)','--sum-b':'rgba(56,189,248,0.2)'},
 
-  // ── BLACK & WHITE ── pure contrast, white text on black
+  // -- BLACK & WHITE -- pure contrast, white text on black
   midnight:{'--bg':'#000000','--bg2':'#0a0a0a','--surf':'rgba(255,255,255,0.04)','--surf2':'rgba(255,255,255,0.07)','--bdr':'rgba(255,255,255,0.12)','--txt':'#FFFFFF','--muted':'rgba(255,255,255,0.45)','--acc':'#FFFFFF','--acc2':'#888888','--on-acc':'#000000','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(255,255,255,0.12)','--sel-bg':'rgba(255,255,255,0.08)','--tag-bg':'rgba(255,255,255,0.12)','--tag-c':'#FFFFFF','--sum-bg':'rgba(255,255,255,0.05)','--sum-b':'rgba(255,255,255,0.18)'},
 
-  // ── WHITE & BLACK ── pure white bg, black text
+  // -- WHITE & BLACK -- pure white bg, black text
   white:   {'--bg':'#FFFFFF','--bg2':'#F2F2F2','--surf':'rgba(0,0,0,0.04)','--surf2':'rgba(0,0,0,0.07)','--bdr':'rgba(0,0,0,0.1)','--txt':'#111111','--muted':'rgba(17,17,17,0.45)','--acc':'#111111','--acc2':'#555555','--on-acc':'#FFFFFF','--inp':'rgba(0,0,0,0.05)','--inp-b':'rgba(0,0,0,0.12)','--sel-bg':'rgba(0,0,0,0.05)','--tag-bg':'rgba(0,0,0,0.08)','--tag-c':'#111111','--sum-bg':'rgba(0,0,0,0.04)','--sum-b':'rgba(0,0,0,0.15)'},
 
-  // ── APPLE ── dark like macOS with SF-style blue
+  // -- APPLE -- dark like macOS with SF-style blue
   apple:   {'--bg':'#1C1C1E','--bg2':'#2C2C2E','--surf':'rgba(255,255,255,0.05)','--surf2':'rgba(255,255,255,0.08)','--bdr':'rgba(255,255,255,0.1)','--txt':'#F5F5F7','--muted':'rgba(245,245,247,0.45)','--acc':'#0071E3','--acc2':'#30D158','--on-acc':'#FFFFFF','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(255,255,255,0.1)','--sel-bg':'rgba(0,113,227,0.12)','--tag-bg':'rgba(0,113,227,0.15)','--tag-c':'#409CFF','--sum-bg':'rgba(0,113,227,0.07)','--sum-b':'rgba(0,113,227,0.22)'},
 
-  // ── WINDOWS 11 ── fluent design, acrylic blues
+  // -- WINDOWS 11 -- fluent design, acrylic blues
   windows: {'--bg':'#0C2340','--bg2':'#0F2D52','--surf':'rgba(255,255,255,0.06)','--surf2':'rgba(255,255,255,0.1)','--bdr':'rgba(255,255,255,0.12)','--txt':'#FFFFFF','--muted':'rgba(255,255,255,0.5)','--acc':'#0078D4','--acc2':'#00B4FF','--on-acc':'#FFFFFF','--inp':'rgba(255,255,255,0.07)','--inp-b':'rgba(255,255,255,0.14)','--sel-bg':'rgba(0,120,212,0.15)','--tag-bg':'rgba(0,180,255,0.15)','--tag-c':'#00B4FF','--sum-bg':'rgba(0,120,212,0.1)','--sum-b':'rgba(0,120,212,0.3)'},
 
-  // ── NINTENDO ── red & white, bold like Switch UI
+  // -- NINTENDO -- red & white, bold like Switch UI
   nintendo:{'--bg':'#1A0A0A','--bg2':'#2A1010','--surf':'rgba(255,255,255,0.05)','--surf2':'rgba(255,255,255,0.08)','--bdr':'rgba(255,255,255,0.1)','--txt':'#FFFFFF','--muted':'rgba(255,255,255,0.45)','--acc':'#E60012','--acc2':'#009AC7','--on-acc':'#FFFFFF','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(255,255,255,0.1)','--sel-bg':'rgba(230,0,18,0.12)','--tag-bg':'rgba(230,0,18,0.18)','--tag-c':'#FF4455','--sum-bg':'rgba(230,0,18,0.08)','--sum-b':'rgba(230,0,18,0.25)'},
 
-  // ── FOREST ── deep green, earthy & natural
+  // -- FOREST -- deep green, earthy & natural
   forest:  {'--bg':'#0D1F0D','--bg2':'#162816','--surf':'rgba(255,255,255,0.05)','--surf2':'rgba(255,255,255,0.08)','--bdr':'rgba(100,200,100,0.15)','--txt':'#E8F5E9','--muted':'rgba(232,245,233,0.45)','--acc':'#4CAF50','--acc2':'#8BC34A','--on-acc':'#0D1F0D','--inp':'rgba(255,255,255,0.06)','--inp-b':'rgba(100,200,100,0.15)','--sel-bg':'rgba(76,175,80,0.1)','--tag-bg':'rgba(76,175,80,0.18)','--tag-c':'#69F070','--sum-bg':'rgba(76,175,80,0.07)','--sum-b':'rgba(76,175,80,0.25)'}
 };
 function setTheme(t){
@@ -1173,9 +1173,9 @@ function dismissNudge(){
 }
 function scrollToBooking(){document.getElementById('sc1').scrollIntoView({behavior:'smooth'});}
 
-/* ────────────────────────────
+/* ----------------------------
    SERVICE GRID
-──────────────────────────── */
+---------------------------- */
 function buildSvcGrid(){
   var prices=getPrices();
   var html='';
@@ -1268,9 +1268,9 @@ function renderPriceTables(){
   });
 }
 
-/* ────────────────────────────
+/* ----------------------------
    DURATION
-──────────────────────────── */
+---------------------------- */
 function pickDur(el,mins){
   document.querySelectorAll('.pill').forEach(function(p){p.classList.remove('active');});
   el.classList.add('active');B.dur=mins;
@@ -1278,9 +1278,9 @@ function pickDur(el,mins){
   updateDurHint();
 }
 
-/* ────────────────────────────
+/* ----------------------------
    PACKAGES
-──────────────────────────── */
+---------------------------- */
 function buildPkgGrid(){
   var pkgs=getPackages();
   var html='';
@@ -1351,9 +1351,9 @@ function pickPkg(id){
   B.pkgLabel=pk.name+': '+pk.sessions+' sessions of '+pk.svc+' ('+pk.discount+')';
 }
 
-/* ────────────────────────────
+/* ----------------------------
    COACH GRID
-──────────────────────────── */
+---------------------------- */
 var DAY_LABELS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 function buildCoachGrid(){
@@ -1382,13 +1382,13 @@ function pickCoach(id){
   document.querySelectorAll('.coach-card').forEach(function(x){x.classList.remove('active');});
   var el=document.getElementById('coach_'+id);if(el)el.classList.add('active');
   B.coach=c;B.date=null;B.time='';
-  document.getElementById('timeSection').style.display='none';
+  var ts=document.getElementById('timeSection');if(ts)ts.style.display='none';
   renderCoachBio(c);
 }
 
-/* ────────────────────────────
+/* ----------------------------
    BADGE CATALOG
-──────────────────────────── */
+---------------------------- */
 var BADGE_CATALOG = [
   {id:'ncaa-d1-athlete', label:'NCAA D1 Athlete',   cls:'cb-ncaa-d1-athlete'},
   {id:'ncaa-d2-athlete', label:'NCAA D2 Athlete',   cls:'cb-ncaa-d2-athlete'},
@@ -1449,9 +1449,9 @@ function renderCoachBio(c){
   panel.classList.add('show');
 }
 
-/* ────────────────────────────
+/* ----------------------------
    PACKAGE SESSION SCHEDULER
-──────────────────────────── */
+---------------------------- */
 var pkgCalYear=new Date().getFullYear();
 var pkgCalMonth=new Date().getMonth();
 var activePkgSessionIdx=-1;
@@ -1631,9 +1631,9 @@ function addPkgSession(){
   setTimeout(function(){toggleSessionPicker(B.pkgSessions.length-1);},80);
 }
 
-/* ────────────────────────────
+/* ----------------------------
    CALENDAR (single session)
-──────────────────────────── */
+---------------------------- */
 var MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
 
 function updateCalSub(){
@@ -1726,9 +1726,9 @@ function changeMonth(dir){
   renderCal();
 }
 
-/* ────────────────────────────
+/* ----------------------------
    NAVIGATION
-──────────────────────────── */
+---------------------------- */
 function goTo(n){
   // NEW ORDER: 1=Coach, 2=Service, 3=Schedule, 4=Details, 5=Confirm
   if(n===2&&!B.coach){showToast('Please select a coach first!');return;}
@@ -1799,9 +1799,9 @@ function updateSteps(n){
   }
 }
 
-/* ────────────────────────────
+/* ----------------------------
    FORM
-──────────────────────────── */
+---------------------------- */
 function readForm(){B.fi=val('fFirst');B.la=val('fLast');B.em=val('fEmail');B.ph=val('fPhone');B.pos=val('fPos');B.lv=val('fLevel');B.notes=val('fNotes');}
 
 function validateForm(){
@@ -1837,9 +1837,9 @@ function buildConfirm(){
   document.getElementById('priceAmt').textContent=B.svcLabel;
 }
 
-/* ────────────────────────────
+/* ----------------------------
    SUBMIT
-──────────────────────────── */
+---------------------------- */
 function submitBooking(){
   var btn=document.getElementById('lockBtn');
   btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Sending...';
@@ -1893,7 +1893,7 @@ function submitBooking(){
       .catch(function(err){ console.error('Client email FAILED:', JSON.stringify(err)); });
   }
 
-  // ── SMS via Twilio ──
+  // -- SMS via Twilio --
   if(SMS_READY){
     var coachName=B.coach?B.coach.name:'your coach';
     var sessionLine=B.isPkg
@@ -1956,9 +1956,9 @@ function buildGCal(isTrainer){
   return'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+start+'/'+end+'&details='+encodeURIComponent(details)+'&location='+encodeURIComponent('Court TBD');
 }
 
-/* ────────────────────────────
+/* ----------------------------
    WAITLIST
-──────────────────────────── */
+---------------------------- */
 function openWaitlist(){
   wlTargetSlot={date:B.date||'',time:'any',coach:B.coach?B.coach.name:'any'};
   document.getElementById('wlModalSub').textContent='We\'ll notify you if a spot opens up on '+fmtDate(B.date)+' with '+(B.coach?B.coach.name:'your coach')+'.';
@@ -1982,9 +1982,9 @@ function submitWaitlist(){
   document.getElementById('wlPhone').value='';
 }
 
-/* ────────────────────────────
+/* ----------------------------
    ADMIN
-──────────────────────────── */
+---------------------------- */
 var adminPage=0;var PG=10;
 
 function showAdmin(){
@@ -2027,11 +2027,12 @@ function switchTab(t){
 
 function getBase(b){
   if(b.base&&b.base>0)return b.base;
-  // Extract first number from svcLabel e.g. "$75 — + court fee" → 75
+  // Extract first number from svcLabel e.g. "$75 --- + court fee" -> 75
   var m=String(b.svcLabel||'').match(/\$?(\d+)/);
   return m?Number(m[1]):0;
 }
-  var all=getBookings();var now=new Date();
+
+function updateStats(){
   var mon=all.filter(function(b){var d=new Date(b.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
   var up=all.filter(function(b){return new Date(b.date)>=new Date(now.getFullYear(),now.getMonth(),now.getDate());});
   var rev=all.reduce(function(s,b){return s+getBase(b);},0);
@@ -2137,7 +2138,7 @@ function doExport(){
   a.click();showToast('CSV exported!');
 }
 
-/* ── REVENUE ── */
+/* -- REVENUE -- */
 function drawRevenue(){
   var all=getBookings();var now=new Date();
   var total=all.reduce(function(s,b){return s+getBase(b);},0);
@@ -2201,7 +2202,7 @@ function drawRevenue(){
   document.getElementById('monthChart').innerHTML=chartHtml;
 }
 
-/* ── WAITLIST ── */
+/* -- WAITLIST -- */
 function drawWaitlist(){
   var wl=getWaitlist();var rows=document.getElementById('wlRows');
   if(!wl.length){rows.innerHTML='<div class="empty-msg"><div class="empty-emo">✋</div><p>No waitlist entries yet.</p></div>';return;}
@@ -2220,7 +2221,7 @@ function delWaitlist(id){
   drawWaitlist();showToast('Removed from waitlist.');
 }
 
-/* ── PRICE EDITOR ── */
+/* -- PRICE EDITOR -- */
 function buildPriceEditor(){
   var prices=getPrices();var html='';
   prices.forEach(function(p){
@@ -2329,7 +2330,7 @@ function addNewSvc(){
   showToast('New service added — fill in the name and prices, then save.');
 }
 
-/* ── PACKAGE EDITOR ── */
+/* -- PACKAGE EDITOR -- */
 function buildPkgEditor(){
   var pkgs=getPackages();var html='';
   pkgs.forEach(function(pk){
@@ -2464,7 +2465,7 @@ function addNewPkg(){
   showToast('New package added — fill in details and save.');
 }
 
-/* ── BLOCK DATES ── */
+/* -- BLOCK DATES -- */
 function buildBlockCoachSelect(){
   var coaches=getCoaches();var sel=document.getElementById('blockCoach');
   var html='<option value="all">All Coaches</option>';
@@ -2506,7 +2507,7 @@ function removeBlock(id){
   buildBlockList();showToast('Block removed.');
 }
 
-/* ── COACH MANAGER ── */
+/* -- COACH MANAGER -- */
 var HOUR_RANGE=[];for(var _h=6;_h<=21;_h++)HOUR_RANGE.push(_h);
 
 function buildCoachManager(){
@@ -2632,9 +2633,9 @@ function addCoach(){
   showToast('New coach added.');
 }
 
-/* ────────────────────────────
+/* ----------------------------
    EMAIL DEBUG
-──────────────────────────── */
+---------------------------- */
 function debugLog(msg, color){
   var el=document.getElementById('debugOutput');
   if(!el)return;
@@ -2720,9 +2721,9 @@ function debugSendTest(){
     });
 }
 
-/* ────────────────────────────
+/* ----------------------------
    SMS via TWILIO
-──────────────────────────── */
+---------------------------- */
 function sendSMS(to, body){
   if(!SMS_READY)return;
   var url='https://api.twilio.com/2010-04-01/Accounts/'+TWILIO_ACCOUNT+'/Messages.json';
@@ -2743,9 +2744,9 @@ function sendSMS(to, body){
   .catch(function(e){console.error('SMS failed:',e);});
 }
 
-/* ────────────────────────────
+/* ----------------------------
    HELPERS
-──────────────────────────── */
+---------------------------- */
 function val(id){var el=document.getElementById(id);return el?el.value:'';}
 function setText(id,t){var el=document.getElementById(id);if(el)el.textContent=t;}
 function pad(n){return String(n).padStart(2,'0');}
@@ -2770,9 +2771,9 @@ function fmtDate(ds){if(!ds)return'—';var parts=ds.split('-').map(Number);var 
 function ci(lbl,v){return'<div class="conf-item"><div class="conf-lbl">'+lbl+'</div><div class="conf-val">'+esc(String(v||'—'))+'</div></div>';}
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);}
 
-/* ────────────────────────────
+/* ----------------------------
    INIT
-──────────────────────────── */
+---------------------------- */
 (function(){
   // Clear old prices data so hidden/spotsLeft fields load fresh
   if(!lsGet('vt_prices_v2',false)){localStorage.removeItem('vt_prices2');lsSet('vt_prices_v2',true);}
@@ -2784,7 +2785,7 @@ function showToast(msg){var t=document.getElementById('toast');t.textContent=msg
   buildCoachGrid();buildSvcGrid();buildPkgGrid();renderCal();
   checkReminder();
 
-  // ── Load EmailJS and init ──
+  // -- Load EmailJS and init --
   function initEJS(){
     if(EJS_READY&&typeof emailjs!=='undefined'){
       emailjs.init(EJS_KEY);
