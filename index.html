@@ -1022,18 +1022,61 @@ function syncFromSheets(cb){
     .then(function(data){
       if(data.status==='ok'&&Array.isArray(data.bookings)){
         var bookings=data.bookings.map(function(row){
+          // Google Sheets sometimes returns dates as ISO strings or serial numbers
+          // Normalize the date field to YYYY-MM-DD
+          var rawDate=row['Date']||'';
+          var cleanDate='';
+          if(rawDate){
+            // If it's a full ISO timestamp like "2026-04-30T00:00:00.000Z"
+            if(String(rawDate).indexOf('T')!==-1){
+              cleanDate=String(rawDate).split('T')[0];
+            }
+            // If it's already YYYY-MM-DD
+            else if(/^\d{4}-\d{2}-\d{2}$/.test(String(rawDate))){
+              cleanDate=String(rawDate);
+            }
+            // If it's a Date object or something else stringified
+            else if(rawDate instanceof Date){
+              var d=rawDate;
+              cleanDate=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+            }
+            // Fallback: try parsing it
+            else {
+              var parsed=new Date(rawDate);
+              if(!isNaN(parsed.getTime())){
+                cleanDate=parsed.getFullYear()+'-'+pad(parsed.getMonth()+1)+'-'+pad(parsed.getDate());
+              }
+            }
+          }
+
+          // Normalize time — strip any unwanted suffixes
+          var rawTime=String(row['Time']||'').trim();
+          // Sometimes Sheets adds ":00" seconds — clean to "H:MM AM"
+          var cleanTime=rawTime.replace(/:\d{2}(\s*[AP]M)/i,function(m,p1){return p1.trim();}).trim();
+          // If it got mangled to something odd, leave as-is
+          if(!cleanTime)cleanTime=rawTime;
+
           return{
-            id:row['ID']||'bk_'+Math.random(),
-            bookedAt:row['Booked At']||'',
-            fi:row['First']||'',la:row['Last']||'',
-            em:row['Email']||'',ph:row['Phone']||'',
-            coachName:row['Coach']||'',coachId:'',
-            svc:row['Service']||'',surface:row['Surface']||'Indoor',
-            isPkg:row['Is Package']==='Yes',pkgLabel:row['Package Label']||'',
-            date:row['Date']||'',time:row['Time']||'',
-            dur:String(row['Duration']||'').replace(' min',''),
-            pos:row['Position']||'',lv:row['Level']||'',
-            svcLabel:row['Price']||'',base:0,notes:row['Notes']||''
+            id:         String(row['ID']||'bk_'+Math.random()),
+            bookedAt:   String(row['Booked At']||''),
+            fi:         String(row['First']||''),
+            la:         String(row['Last']||''),
+            em:         String(row['Email']||''),
+            ph:         String(row['Phone']||''),
+            coachName:  String(row['Coach']||''),
+            coachId:    '',
+            svc:        String(row['Service']||''),
+            surface:    String(row['Surface']||'Indoor'),
+            isPkg:      row['Is Package']==='Yes',
+            pkgLabel:   String(row['Package Label']||''),
+            date:       cleanDate,
+            time:       cleanTime,
+            dur:        parseInt(String(row['Duration']||'').replace(/[^0-9]/g,''))||0,
+            pos:        String(row['Position']||''),
+            lv:         String(row['Level']||''),
+            svcLabel:   String(row['Price']||''),
+            base:       0,
+            notes:      String(row['Notes']||'')
           };
         });
         lsSet('vt_bookings',bookings);
@@ -2013,13 +2056,13 @@ function drawTable(){
   if(!total){rows.innerHTML='<div class="empty-msg"><div class="empty-emo">📭</div><p>No bookings yet.</p></div>';setText('pagInfo','');document.getElementById('pagBtns').innerHTML='';return;}
   var html='';
   slice.forEach(function(b){
-    var et=endTime(b.time,b.dur);
+    var et=b.dur&&Number(b.dur)>0?endTime(b.time,Number(b.dur)):'';
     var booked=new Date(b.bookedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'});
     var pkgBadge=b.isPkg?'<span class="pkg-badge">PKG</span>':'';
     html+='<div class="tbl-row" id="row_'+b.id+'" onclick="toggleRow(\''+b.id+'\')">'
       +'<div class="td td-name">'+esc(b.fi)+' '+esc(b.la)+'<div class="td-sub">'+esc(b.em)+'</div></div>'
       +'<div class="td"><span class="svc-badge">'+esc(b.svc)+'</span>'+pkgBadge+'</div>'
-      +'<div class="td">'+fmtDate(b.date)+'<div class="td-sub">'+esc(b.time)+' – '+et+'</div></div>'
+      +'<div class="td">'+fmtDate(b.date)+'<div class="td-sub">'+esc(b.time)+(et?' – '+et:'')+'</div></div>'
       +'<div class="td">'+esc(b.coachName||'—')+'</div>'
       +'<div class="td">'+esc(b.svcLabel||'')+'</div>'
       +'<div class="td" style="padding:0;"><button class="expand-arrow" onclick="event.stopPropagation();toggleRow(\''+b.id+'\')">▾</button></div>'
@@ -2029,7 +2072,7 @@ function drawTable(){
           +'<div class="ex-item"><div class="ex-lbl">Phone</div><div class="ex-val">'+esc(b.ph)+'</div></div>'
           +'<div class="ex-item"><div class="ex-lbl">Position</div><div class="ex-val">'+esc(b.pos||'Not specified')+'</div></div>'
           +'<div class="ex-item"><div class="ex-lbl">Level</div><div class="ex-val">'+esc(b.lv||'Not specified')+'</div></div>'
-          +'<div class="ex-item"><div class="ex-lbl">Duration</div><div class="ex-val">'+b.dur+' min</div></div>'
+          +'<div class="ex-item"><div class="ex-lbl">Duration</div><div class="ex-val">'+(b.dur&&Number(b.dur)>0?b.dur+' min':'—')+'</div></div>'
           +'<div class="ex-item"><div class="ex-lbl">Booked At</div><div class="ex-val">'+new Date(b.bookedAt).toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'})+'</div></div>'
           +(b.isPkg?'<div class="ex-item"><div class="ex-lbl">Package</div><div class="ex-val">'+esc(b.pkgLabel)+'</div></div>':'')
           +(b.notes?'<div class="ex-item full"><div class="ex-lbl">Notes</div><div class="ex-val" style="font-weight:400;">'+esc(b.notes)+'</div></div>':'')
