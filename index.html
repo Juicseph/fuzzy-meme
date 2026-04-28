@@ -901,9 +901,9 @@ textarea.form-input{resize:vertical;min-height:80px;}
 /* ────────────────────────────
    CONFIG
 ──────────────────────────── */
-var ADMIN_PW = 'juice';
+var ADMIN_PW = 'trainer2024';
 var EJS_READY = true;
-var EJS_KEY = 'HhRoNpnLnBGgYLAff';
+var EJS_KEY = 'Yzj7bcqr-Ovw0WIO4';
 var EJS_SVC_ID = 'service_mzj10ul';
 var EJS_T = 'trainer_notify';
 var EJS_C = 'client_confirm';
@@ -1701,15 +1701,35 @@ function submitBooking(){
 
   if(EJS_READY&&typeof emailjs!=='undefined'){
     emailjs.init(EJS_KEY);
-    var p={client_name:B.fi+' '+B.la,client_email:B.em,client_phone:B.ph,
-      coach:B.coach?B.coach.name:'',service:B.svc+(B.isPkg?' (Package '+B.pkgLabel+')':''),
-      date:B.isPkg?'See sessions below':fmtDate(B.date),
-      time:B.isPkg?'See sessions below':(B.time+' – '+et),
-      sessions:sessionsStr,duration:B.dur+' min',price:B.svcLabel,
-      position:B.pos||'N/A',level:B.lv||'N/A',notes:B.notes||'None',trainer_email:TRAINER,
-      cancel_link:'[Add your cancel/reschedule link here]'};
-    emailjs.send(EJS_SVC_ID,EJS_T,p).catch(function(){});
-    emailjs.send(EJS_SVC_ID,EJS_C,p).catch(function(){});
+    var p={
+      client_name:   B.fi+' '+B.la,
+      client_email:  B.em,
+      client_phone:  B.ph,
+      coach:         B.coach?B.coach.name:'',
+      service:       B.svc+(B.isPkg?' (Package '+B.pkgLabel+')':''),
+      surface:       B.surface||'Indoor',
+      date:          B.isPkg?'See sessions below':fmtDate(B.date),
+      time:          B.isPkg?'See sessions below':(B.time+' – '+et),
+      sessions:      sessionsStr,
+      duration:      B.dur+' min',
+      price:         B.svcLabel,
+      position:      B.pos||'N/A',
+      level:         B.lv||'N/A',
+      notes:         B.notes||'None',
+      trainer_email: TRAINER,
+      to_email:      TRAINER,
+      from_name:     'Volleyball Trainer Booking',
+      reply_to:      B.em
+    };
+    // Send to trainer
+    emailjs.send(EJS_SVC_ID, EJS_T, p)
+      .then(function(){ console.log('Trainer email sent OK'); })
+      .catch(function(err){ console.error('Trainer email FAILED:', JSON.stringify(err)); showToast('⚠️ Email error — check console'); });
+    // Send confirmation to client
+    var clientP=Object.assign({},p,{to_email:B.em});
+    emailjs.send(EJS_SVC_ID, EJS_C, clientP)
+      .then(function(){ console.log('Client email sent OK'); })
+      .catch(function(err){ console.error('Client email FAILED:', JSON.stringify(err)); });
   }
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   document.getElementById('sc6').classList.add('active');
