@@ -933,7 +933,7 @@ textarea.form-input{resize:vertical;min-height:80px;}
 var ADMIN_PW = 'trainer2024';
 var EJS_READY = true;
 var EJS_KEY = 'hp5Kk2ZDOdzXN_pWm';
-var EJS_SVC_ID = 'service_mzj10ul';
+var EJS_SVC_ID = 'service_4c0ju5m';
 var EJS_T = 'template_drd9z2n';
 var EJS_C = 'template_naxgdts';
 var TRAINER = 'orlando.catalan23@gmail.com';
@@ -2033,6 +2033,7 @@ function getBase(b){
 }
 
 function updateStats(){
+  var all=getBookings();var now=new Date();
   var mon=all.filter(function(b){var d=new Date(b.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
   var up=all.filter(function(b){return new Date(b.date)>=new Date(now.getFullYear(),now.getMonth(),now.getDate());});
   var rev=all.reduce(function(s,b){return s+getBase(b);},0);
