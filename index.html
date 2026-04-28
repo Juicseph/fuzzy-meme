@@ -806,6 +806,7 @@ textarea.form-input{resize:vertical;min-height:80px;}
             <button class="th-dot" data-t="forest"   onclick="setTheme('forest')"   title="Forest"></button>
           </div>
         </div>
+        <button class="a-btn" id="syncBtn" onclick="syncFromSheets(null)" style="display:none;">☁️ Sync from Sheets</button>
         <button class="a-btn" onclick="doExport()">⬇ Export CSV</button>
         <button class="a-btn" onclick="exitAdmin()">← Exit</button>
       </div>
@@ -986,8 +987,70 @@ function getCoaches(){return lsGet('vt_coaches',DEF_COACHES);}
 function getBookings(){return lsGet('vt_bookings',[]);}
 function getWaitlist(){return lsGet('vt_waitlist',[]);}
 function getBlocks(){return lsGet('vt_blocks',[]);}
-function addBookingRec(b){var a=getBookings();a.unshift(b);lsSet('vt_bookings',a);}
-function removeBookingRec(id){lsSet('vt_bookings',getBookings().filter(function(b){return b.id!==id;}));}
+
+// ── GOOGLE SHEETS BACKEND ──────────────────────────────────
+// Paste your Apps Script Web App URL below, then set SHEETS_READY=true
+var SHEETS_URL   = 'https://script.google.com/macros/s/AKfycbyXeW5rvV-AGuvDGVbmY-x7K7wmz5Bre3Z3tOJyIHp_F1WZ4lheFS5G49qZvWSDe79Q/exec';
+var SHEETS_READY = true;
+// ──────────────────────────────────────────────────────────
+
+function addBookingRec(b){
+  // Save locally first (instant, works offline)
+  var a=getBookings();a.unshift(b);lsSet('vt_bookings',a);
+  // Sync to Google Sheets in background
+  if(SHEETS_READY&&SHEETS_URL.indexOf('script.google.com')!==-1){
+    fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)})
+      .then(function(){console.log('✅ Synced to Sheets');})
+      .catch(function(e){console.warn('Sheets sync failed:',e);});
+  }
+}
+
+function removeBookingRec(id){
+  lsSet('vt_bookings',getBookings().filter(function(b){return b.id!==id;}));
+  if(SHEETS_READY&&SHEETS_URL.indexOf('script.google.com')!==-1){
+    fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',id:id})}).catch(function(){});
+  }
+}
+
+// Pull all bookings from Google Sheets into local cache + refresh dashboard
+function syncFromSheets(cb){
+  if(!SHEETS_READY||SHEETS_URL.indexOf('script.google.com')===-1){if(cb)cb(false);return;}
+  var btn=document.getElementById('syncBtn');
+  if(btn){btn.textContent='⏳ Syncing...';btn.disabled=true;}
+  fetch(SHEETS_URL+'?nocache='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data.status==='ok'&&Array.isArray(data.bookings)){
+        var bookings=data.bookings.map(function(row){
+          return{
+            id:row['ID']||'bk_'+Math.random(),
+            bookedAt:row['Booked At']||'',
+            fi:row['First']||'',la:row['Last']||'',
+            em:row['Email']||'',ph:row['Phone']||'',
+            coachName:row['Coach']||'',coachId:'',
+            svc:row['Service']||'',surface:row['Surface']||'Indoor',
+            isPkg:row['Is Package']==='Yes',pkgLabel:row['Package Label']||'',
+            date:row['Date']||'',time:row['Time']||'',
+            dur:String(row['Duration']||'').replace(' min',''),
+            pos:row['Position']||'',lv:row['Level']||'',
+            svcLabel:row['Price']||'',base:0,notes:row['Notes']||''
+          };
+        });
+        lsSet('vt_bookings',bookings);
+        updateStats();drawTable();drawRevenue();
+        showToast('✅ Synced '+bookings.length+' bookings from Sheets!');
+        console.log('Synced',bookings.length,'bookings from Google Sheets');
+      }
+      if(btn){btn.textContent='☁️ Sync from Sheets';btn.disabled=false;}
+      if(cb)cb(true);
+    })
+    .catch(function(err){
+      console.warn('Sync failed:',err);
+      showToast('⚠️ Sync failed — check console');
+      if(btn){btn.textContent='☁️ Sync from Sheets';btn.disabled=false;}
+      if(cb)cb(false);
+    });
+}
 
 /* ────────────────────────────
    BOOKING STATE
@@ -1897,7 +1960,18 @@ function doLogin(){
     document.getElementById('adminLogin').style.display='none';
     document.getElementById('adminDash').style.display='block';
     adminPage=0;
-    updateStats();drawTable();buildPriceEditor();buildPkgEditor();buildCoachManager();buildBlockList();buildBlockCoachSelect();drawWaitlist();drawRevenue();
+    // Show sync button if Sheets is configured
+    var syncBtn=document.getElementById('syncBtn');
+    if(syncBtn)syncBtn.style.display=SHEETS_READY?'inline-flex':'none';
+    // Auto-sync from Google Sheets on login
+    if(SHEETS_READY){
+      showToast('⏳ Loading bookings from Google Sheets...');
+      syncFromSheets(function(){
+        buildPriceEditor();buildPkgEditor();buildCoachManager();buildBlockList();buildBlockCoachSelect();drawWaitlist();
+      });
+    } else {
+      updateStats();drawTable();buildPriceEditor();buildPkgEditor();buildCoachManager();buildBlockList();buildBlockCoachSelect();drawWaitlist();drawRevenue();
+    }
   }else{showToast('Incorrect password');document.getElementById('adminPw').value='';}
 }
 
